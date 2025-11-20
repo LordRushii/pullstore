@@ -1,9 +1,11 @@
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import { ShoppingCart, LogOut } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
 
 const MainLayout = () => {
     const { user, logout } = useAuth();
+    const { cartCount } = useCart();
     const navigate = useNavigate();
 
     const handleLogout = () => {
@@ -69,6 +71,11 @@ const MainLayout = () => {
                             className="p-2 hover:bg-gray-100 rounded-full transition-colors relative"
                         >
                             <ShoppingCart className="w-5 h-5" />
+                            {cartCount > 0 && (
+                                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs w-5 h-5 rounded-full flex items-center justify-center font-bold animate-bounce">
+                                    {cartCount}
+                                </span>
+                            )}
                         </Link>
                     </div>
                 </div>
