@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { ChevronDown, Ruler, ShoppingCart } from "lucide-react";
 import { useGSAP } from "@gsap/react";
 import gsap from "gsap";
-import { SpringButton } from "./spring-button";
+import { SpringButton } from "./gsap/spring-button";
 import {
   Tooltip,
   TooltipContent,

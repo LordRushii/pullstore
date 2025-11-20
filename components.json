@@ -17,8 +17,5 @@
     "ui": "@/components/ui",
     "lib": "@/lib",
     "hooks": "@/hooks"
-  },
-  "registries": {
-    "@paceui-ui": "https://ui.paceui.com/r/%7Bname%7D.json"
   }
 }
