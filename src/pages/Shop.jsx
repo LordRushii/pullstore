@@ -3,7 +3,12 @@ import ProductFilter from "../components/product-filter";
 const Shop = () => {
     return (
         <div className="min-h-screen bg-background">
-            <ProductFilter />
+
+
+            {/* Products Section with Margin */}
+            <div className="container mx-auto px-4 lg:px-8">
+                <ProductFilter />
+            </div>
         </div>
     );
 };
