@@ -1,6 +1,13 @@
 @import "tailwindcss";
 @import "tw-animate-css";
 
+/* Optional: smooth backdrop blur support */
+@supports (backdrop-filter: blur(8px)) {
+  .backdrop-blur-xs {
+    backdrop-filter: blur(4px);
+  }
+}
+
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
