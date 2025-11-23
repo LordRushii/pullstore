@@ -1,12 +1,15 @@
 import { useAuth } from "../context/AuthContext";
 import { dataLayer } from "../lib/dataLayer";
 import { Package, Truck, CheckCircle, Clock, User } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 
 const UserProfile = () => {
     const { user } = useAuth();
     const [userOrders, setUserOrders] = useState([]);
+    const containerRef = useRef(null);
 
     useEffect(() => {
         const loadOrders = async () => {
@@ -17,6 +20,37 @@ const UserProfile = () => {
         };
         loadOrders();
     }, [user]);
+
+    useGSAP(() => {
+        const tl = gsap.timeline();
+
+        tl.from(".profile-title", {
+            y: 30,
+            opacity: 0,
+            duration: 0.8,
+            ease: "power3.out"
+        })
+            .from(".profile-card", {
+                x: -30,
+                opacity: 0,
+                duration: 0.8,
+                ease: "power3.out"
+            }, "-=0.4")
+            .from(".order-history-title", {
+                x: 30,
+                opacity: 0,
+                duration: 0.6,
+                ease: "power3.out"
+            }, "-=0.6")
+            .from(".order-card", {
+                y: 30,
+                opacity: 0,
+                duration: 0.6,
+                stagger: 0.1,
+                ease: "power2.out"
+            }, "-=0.4");
+
+    }, { scope: containerRef, dependencies: [userOrders.length] });
 
     const getStatusIcon = (status) => {
         switch (status) {
@@ -34,15 +68,15 @@ const UserProfile = () => {
     if (!user) return null;
 
     return (
-        <div className="min-h-screen bg-background py-12">
+        <div className="min-h-screen bg-background py-12" ref={containerRef}>
             <div className="container-wide">
-                <h1 className="text-5xl md:text-7xl font-heading font-bold uppercase tracking-tighter mb-12 border-b-2 border-border pb-6">
+                <h1 className="text-5xl md:text-7xl font-heading font-bold uppercase tracking-tighter mb-12 border-b-2 border-border pb-6 profile-title">
                     Profile
                 </h1>
 
                 <div className="grid lg:grid-cols-3 gap-12">
                     {/* User Info Card */}
-                    <div className="lg:col-span-1">
+                    <div className="lg:col-span-1 profile-card">
                         <div className="border-2 border-border bg-background p-8 sticky top-24">
                             <div className="flex items-center gap-6 mb-8">
                                 <div className="w-20 h-20 border-2 border-foreground rounded-full flex items-center justify-center text-3xl font-heading font-bold uppercase bg-accent text-accent-foreground">
@@ -73,11 +107,11 @@ const UserProfile = () => {
 
                     {/* Order History */}
                     <div className="lg:col-span-2">
-                        <h2 className="text-3xl font-heading font-bold uppercase mb-8">Order History</h2>
+                        <h2 className="text-3xl font-heading font-bold uppercase mb-8 order-history-title">Order History</h2>
                         <div className="space-y-8">
                             {userOrders.length > 0 ? (
                                 userOrders.map((order) => (
-                                    <div key={order.id} className="border-2 border-border bg-background p-6 transition-all hover:border-foreground group">
+                                    <div key={order.id} className="border-2 border-border bg-background p-6 transition-all hover:border-foreground group order-card">
                                         <div className="flex flex-wrap justify-between items-start gap-4 mb-6 border-b-2 border-border pb-4">
                                             <div>
                                                 <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">Order ID</p>
@@ -121,7 +155,7 @@ const UserProfile = () => {
                                     </div>
                                 ))
                             ) : (
-                                <div className="text-center py-20 border-2 border-border border-dashed">
+                                <div className="text-center py-20 border-2 border-border border-dashed order-card">
                                     <Package className="w-16 h-16 text-muted-foreground mx-auto mb-6" />
                                     <h3 className="text-2xl font-heading font-bold uppercase mb-2">No Orders Yet</h3>
                                     <p className="text-muted-foreground mb-8">Start your collection today.</p>

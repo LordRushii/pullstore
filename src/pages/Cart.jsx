@@ -2,14 +2,51 @@ import { Trash2, ShoppingBag, Minus, Plus, ArrowRight } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../context/CartContext";
 import { Button } from "@/components/ui/button";
+import { useRef } from "react";
+import gsap from "gsap";
+import { useGSAP } from "@gsap/react";
 
 const Cart = () => {
     const navigate = useNavigate();
     const { cartItems, updateQuantity, removeFromCart, cartTotal } = useCart();
+    const containerRef = useRef(null);
 
     const shipping = cartItems.length > 0 ? 10 : 0;
     const subtotal = cartTotal;
     const total = subtotal + shipping;
+
+    useGSAP(() => {
+        if (cartItems.length > 0) {
+            const tl = gsap.timeline();
+
+            tl.from(".cart-title", {
+                y: 30,
+                opacity: 0,
+                duration: 0.8,
+                ease: "power3.out"
+            })
+                .from(".cart-item", {
+                    y: 20,
+                    opacity: 0,
+                    duration: 0.6,
+                    stagger: 0.1,
+                    ease: "power2.out"
+                }, "-=0.4")
+                .from(".order-summary", {
+                    x: 20,
+                    opacity: 0,
+                    duration: 0.8,
+                    ease: "power3.out"
+                }, "-=0.6");
+        } else {
+            gsap.from(".empty-cart", {
+                scale: 0.9,
+                opacity: 0,
+                duration: 0.8,
+                ease: "back.out(1.7)"
+            });
+        }
+    }, { scope: containerRef, dependencies: [cartItems.length] });
 
     const handleCheckout = () => {
         navigate("/checkout");
@@ -17,8 +54,8 @@ const Cart = () => {
 
     if (cartItems.length === 0) {
         return (
-            <div className="min-h-[60vh] flex flex-col items-center justify-center px-4 bg-background">
-                <div className="text-center">
+            <div className="min-h-[60vh] flex flex-col items-center justify-center px-4 bg-background" ref={containerRef}>
+                <div className="text-center empty-cart">
                     <div className="w-24 h-24 border-2 border-border rounded-full flex items-center justify-center mx-auto mb-6">
                         <ShoppingBag className="w-10 h-10 text-muted-foreground" />
                     </div>
@@ -37,9 +74,9 @@ const Cart = () => {
     }
 
     return (
-        <div className="min-h-screen bg-background py-12">
+        <div className="min-h-screen bg-background py-12" ref={containerRef}>
             <div className="container-wide">
-                <h1 className="text-5xl md:text-7xl font-heading font-bold uppercase tracking-tighter mb-12 border-b-2 border-border pb-6">
+                <h1 className="text-5xl md:text-7xl font-heading font-bold uppercase tracking-tighter mb-12 border-b-2 border-border pb-6 cart-title">
                     Shopping Cart <span className="text-2xl text-muted-foreground align-top ml-2">({cartItems.length})</span>
                 </h1>
 
@@ -48,7 +85,7 @@ const Cart = () => {
                         {cartItems.map((item) => (
                             <div
                                 key={item.id}
-                                className="flex flex-col sm:flex-row gap-6 pb-8 border-b border-border last:border-0"
+                                className="flex flex-col sm:flex-row gap-6 pb-8 border-b border-border last:border-0 cart-item"
                             >
                                 <div className="w-full sm:w-40 aspect-[3/4] bg-secondary/20 border border-border overflow-hidden">
                                     <img
@@ -78,6 +115,7 @@ const Cart = () => {
                                                 className="w-10 h-10 flex items-center justify-center hover:bg-accent hover:text-accent-foreground transition-colors disabled:opacity-50"
                                                 onClick={() => updateQuantity(item.id, item.quantity - 1)}
                                                 disabled={item.quantity <= 1}
+                                                aria-label="Decrease quantity"
                                             >
                                                 <Minus className="w-4 h-4" />
                                             </button>
@@ -87,6 +125,7 @@ const Cart = () => {
                                             <button
                                                 className="w-10 h-10 flex items-center justify-center hover:bg-accent hover:text-accent-foreground transition-colors"
                                                 onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                                                aria-label="Increase quantity"
                                             >
                                                 <Plus className="w-4 h-4" />
                                             </button>
@@ -95,6 +134,7 @@ const Cart = () => {
                                         <button
                                             onClick={() => removeFromCart(item.id)}
                                             className="text-muted-foreground hover:text-destructive transition-colors flex items-center gap-2 uppercase font-bold text-xs tracking-widest"
+                                            aria-label="Remove item"
                                         >
                                             <Trash2 className="w-4 h-4" /> Remove
                                         </button>
@@ -104,7 +144,7 @@ const Cart = () => {
                         ))}
                     </div>
 
-                    <div className="lg:col-span-1">
+                    <div className="lg:col-span-1 order-summary">
                         <div className="bg-secondary/10 border-2 border-border p-8 sticky top-24">
                             <h2 className="text-2xl font-heading font-bold uppercase mb-8">Order Summary</h2>
 
