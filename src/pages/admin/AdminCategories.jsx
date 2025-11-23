@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { products } from "../../data/mockData";
+import { useState, useEffect } from "react";
+import { dataLayer } from "../../lib/dataLayer";
 import { Plus, Pencil, Trash2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,14 +14,22 @@ import {
 } from "@/components/ui/table";
 
 const AdminCategories = () => {
-    const uniqueCategories = [...new Set(products.map((p) => p.category))];
-    const [categories, setCategories] = useState(
-        uniqueCategories.map((c, i) => ({
-            id: i,
-            name: c,
-            count: products.filter((p) => p.category === c).length,
-        }))
-    );
+    const [categories, setCategories] = useState([]);
+
+    useEffect(() => {
+        const loadCategories = async () => {
+            const products = await dataLayer.getProducts();
+            const uniqueCategories = [...new Set(products.map((p) => p.category))];
+            setCategories(
+                uniqueCategories.map((c, i) => ({
+                    id: i,
+                    name: c,
+                    count: products.filter((p) => p.category === c).length,
+                }))
+            );
+        };
+        loadCategories();
+    }, []);
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [editingCategory, setEditingCategory] = useState(null);
     const [formData, setFormData] = useState({ name: "" });

@@ -1,5 +1,5 @@
 import { Outlet, Link, useNavigate } from "react-router-dom";
-import { ShoppingCart, LogOut } from "lucide-react";
+import { ShoppingCart, LogOut, User } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
 
@@ -18,7 +18,7 @@ const MainLayout = () => {
             <header className="sticky top-0 z-50 w-full border-b bg-white/80 backdrop-blur-md">
                 <div className="container mx-auto px-4 h-16 flex items-center justify-between">
                     <Link to="/" className="text-2xl font-bold tracking-tighter">
-                        Luxe<span className="text-primary">Store</span>
+                        Pull<span className="text-primary">Store</span>
                     </Link>
 
                     <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
@@ -38,9 +38,10 @@ const MainLayout = () => {
                                 </span>
                                 <Link
                                     to="/profile"
-                                    className="text-sm font-medium hover:text-primary transition-colors"
+                                    className="p-2 hover:bg-gray-100 rounded-full transition-colors"
+                                    title="Profile"
                                 >
-                                    Profile
+                                    <User className="w-5 h-5" />
                                 </Link>
                                 {user.role === "admin" && (
                                     <Link
@@ -87,7 +88,7 @@ const MainLayout = () => {
 
             <footer className="border-t bg-white py-8 mt-auto">
                 <div className="container mx-auto px-4 text-center text-sm text-muted-foreground">
-                    &copy; {new Date().getFullYear()} LuxeStore. All rights reserved.
+                    &copy; {new Date().getFullYear()} PullStore. All rights reserved.
                 </div>
             </footer>
         </div>

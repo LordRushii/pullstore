@@ -1,10 +1,21 @@
 import { useAuth } from "../context/AuthContext";
-import { orders } from "../data/mockData";
+import { dataLayer } from "../lib/dataLayer";
 import { Package, Truck, CheckCircle, Clock } from "lucide-react";
+import { useState, useEffect } from "react";
 
 const UserProfile = () => {
     const { user } = useAuth();
-    const userOrders = orders.filter((order) => order.userId === user?.id);
+    const [userOrders, setUserOrders] = useState([]);
+
+    useEffect(() => {
+        const loadOrders = async () => {
+            if (user?.id) {
+                const orders = await dataLayer.getOrders(user.id);
+                setUserOrders(orders);
+            }
+        };
+        loadOrders();
+    }, [user]);
 
     const getStatusIcon = (status) => {
         switch (status) {

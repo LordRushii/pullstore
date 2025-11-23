@@ -11,9 +11,7 @@ const Cart = () => {
     const total = subtotal + shipping;
 
     const handleCheckout = () => {
-        // Create order and clear cart
-        clearCart();
-        navigate("/profile");
+        navigate("/checkout");
     };
 
     if (cartItems.length === 0) {

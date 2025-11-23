@@ -1,4 +1,6 @@
 import { createContext, useContext, useState, useEffect } from "react";
+import { dataLayer } from "../lib/dataLayer";
+import { useAuth } from "./AuthContext";
 
 const CartContext = createContext();
 
@@ -11,56 +13,58 @@ export const useCart = () => {
 };
 
 export const CartProvider = ({ children }) => {
-    const [cartItems, setCartItems] = useState(() => {
-        const saved = localStorage.getItem("cart");
-        return saved ? JSON.parse(saved) : [];
+    const { user } = useAuth();
+    const [cartItems, setCartItems] = useState([]);
+    const [guestId, setGuestId] = useState(() => {
+        const stored = localStorage.getItem("guest_id");
+        if (stored) return stored;
+        const newId = `guest_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        localStorage.setItem("guest_id", newId);
+        return newId;
     });
 
+    const getEffectiveUserId = () => user?.id || guestId;
+
     useEffect(() => {
-        localStorage.setItem("cart", JSON.stringify(cartItems));
-    }, [cartItems]);
-
-    const addToCart = (product, selectedSize = null, selectedColor = null) => {
-        const cartItem = {
-            id: `${product.sku}-${selectedSize || "default"}-${selectedColor || "default"}`,
-            sku: product.sku,
-            name: product.name,
-            price: product.price,
-            image: product.image,
-            size: selectedSize,
-            color: selectedColor,
-            quantity: 1,
+        const loadCart = async () => {
+            const userId = getEffectiveUserId();
+            const items = await dataLayer.getCart(userId);
+            setCartItems(items);
         };
+        loadCart();
+    }, [user, guestId]);
 
-        setCartItems((prev) => {
-            const existing = prev.find((item) => item.id === cartItem.id);
-            if (existing) {
-                return prev.map((item) =>
-                    item.id === cartItem.id
-                        ? { ...item, quantity: item.quantity + 1 }
-                        : item
-                );
-            }
-            return [...prev, cartItem];
-        });
+    const addToCart = async (product, selectedSize = null, selectedColor = null) => {
+        const userId = getEffectiveUserId();
+        const updatedCart = await dataLayer.addToCart(userId, product, selectedSize, selectedColor);
+        if (updatedCart) setCartItems(updatedCart);
     };
 
-    const removeFromCart = (id) => {
-        setCartItems((prev) => prev.filter((item) => item.id !== id));
+    const removeFromCart = async (id) => {
+        const userId = getEffectiveUserId();
+        const updatedCart = await dataLayer.removeFromCart(userId, id);
+        if (updatedCart) setCartItems(updatedCart);
     };
 
-    const updateQuantity = (id, quantity) => {
-        if (quantity < 1) {
-            removeFromCart(id);
-            return;
+    const updateQuantity = async (id, quantity) => {
+        const userId = getEffectiveUserId();
+        const updatedCart = await dataLayer.updateCartItemQuantity(userId, id, quantity);
+        if (updatedCart) setCartItems(updatedCart);
+    };
+
+    const clearCart = async () => {
+        const userId = getEffectiveUserId();
+        const updatedCart = await dataLayer.clearCart(userId);
+        if (updatedCart) setCartItems(updatedCart);
+    };
+
+    const checkout = async (orderDetails) => {
+        const userId = getEffectiveUserId();
+        const response = await dataLayer.createOrder(userId, orderDetails);
+        if (response.success) {
+            setCartItems([]);
         }
-        setCartItems((prev) =>
-            prev.map((item) => (item.id === id ? { ...item, quantity } : item))
-        );
-    };
-
-    const clearCart = () => {
-        setCartItems([]);
+        return response;
     };
 
     const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
@@ -77,6 +81,7 @@ export const CartProvider = ({ children }) => {
                 removeFromCart,
                 updateQuantity,
                 clearCart,
+                checkout,
                 cartCount,
                 cartTotal,
             }}

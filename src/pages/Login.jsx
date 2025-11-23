@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { Loader2 } from "lucide-react";
@@ -9,27 +9,45 @@ const Login = () => {
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const { login } = useAuth();
+    const { login, isAuthenticated, user } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
 
     const from = location.state?.from?.pathname || "/";
+
+    // Redirect if already authenticated
+    useEffect(() => {
+        if (isAuthenticated) {
+            if (user?.role === "admin") {
+                navigate("/admin", { replace: true });
+            } else {
+                navigate(from, { replace: true });
+            }
+        }
+    }, [isAuthenticated, user, navigate, from]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError("");
         setLoading(true);
 
-        // Simulate network delay
-        setTimeout(() => {
-            const result = login(email, password);
+        try {
+            // Properly await the async login function
+            const result = await login(email, password);
             if (result.success) {
-                navigate(from, { replace: true });
+                if (result.user?.role === "admin") {
+                    navigate("/admin", { replace: true });
+                } else {
+                    navigate(from, { replace: true });
+                }
             } else {
                 setError(result.message);
                 setLoading(false);
             }
-        }, 1000);
+        } catch (err) {
+            setError("An error occurred during login");
+            setLoading(false);
+        }
     };
 
     return (

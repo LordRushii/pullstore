@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { products as initialProducts } from "../../data/mockData";
+import { useState, useEffect } from "react";
+import { dataLayer } from "../../lib/dataLayer";
 import { Plus, Pencil, Trash2, Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/table";
 
 const AdminProducts = () => {
-    const [products, setProducts] = useState(initialProducts);
+    const [products, setProducts] = useState([]);
     const [search, setSearch] = useState("");
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState(null);
@@ -28,13 +28,23 @@ const AdminProducts = () => {
         inStock: true,
     });
 
+    useEffect(() => {
+        loadProducts();
+    }, []);
+
+    const loadProducts = async () => {
+        const data = await dataLayer.getProducts();
+        setProducts(data);
+    };
+
     const filteredProducts = products.filter((product) =>
         product.name.toLowerCase().includes(search.toLowerCase())
     );
 
-    const handleDelete = (sku) => {
+    const handleDelete = async (sku) => {
         if (confirm("Are you sure you want to delete this product?")) {
-            setProducts(products.filter((p) => p.sku !== sku));
+            await dataLayer.deleteProduct(sku);
+            loadProducts();
         }
     };
 
@@ -66,7 +76,7 @@ const AdminProducts = () => {
         setIsDialogOpen(true);
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
 
         const productData = {
@@ -77,15 +87,12 @@ const AdminProducts = () => {
         };
 
         if (editingProduct) {
-            // Update existing product
-            setProducts(
-                products.map((p) => (p.sku === editingProduct.sku ? productData : p))
-            );
+            await dataLayer.updateProduct(editingProduct.sku, productData);
         } else {
-            // Add new product
-            setProducts([...products, productData]);
+            await dataLayer.createProduct(productData);
         }
 
+        loadProducts();
         setIsDialogOpen(false);
         setFormData({
             sku: "",

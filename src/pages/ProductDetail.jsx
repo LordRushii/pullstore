@@ -1,18 +1,38 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { products } from "../data/mockData";
-import { ShoppingCart, ArrowLeft, Check } from "lucide-react";
-import { useState } from "react";
+import { ShoppingCart, ArrowLeft, Check, Heart } from "lucide-react";
+import { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
+import { useCart } from "../context/CartContext";
+import { dataLayer } from "../lib/dataLayer";
 
 const ProductDetail = () => {
     const { sku } = useParams();
     const navigate = useNavigate();
     const { isAuthenticated } = useAuth();
-    const product = products.find((p) => p.sku === sku);
+    const { addToCart } = useCart();
+    const [product, setProduct] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    const [selectedSize, setSelectedSize] = useState(product?.sizes?.[0]);
-    const [selectedColor, setSelectedColor] = useState(product?.colors?.[0]);
+    const [selectedSize, setSelectedSize] = useState(null);
+    const [selectedColor, setSelectedColor] = useState(null);
     const [isAdding, setIsAdding] = useState(false);
+
+    useEffect(() => {
+        const loadProduct = async () => {
+            const p = await dataLayer.getProductBySku(sku);
+            setProduct(p);
+            if (p) {
+                setSelectedSize(p.sizes?.[0]);
+                setSelectedColor(p.colors?.[0]);
+            }
+            setLoading(false);
+        };
+        loadProduct();
+    }, [sku]);
+
+    if (loading) {
+        return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+    }
 
     if (!product) {
         return (
@@ -34,8 +54,8 @@ const ProductDetail = () => {
         setIsAdding(true);
         setTimeout(() => {
             setIsAdding(false);
-            // Mock add to cart logic would go here
-            alert("Added to cart!");
+            addToCart(product, selectedSize, selectedColor);
+            // alert("Added to cart!"); // Optional: replace with toast
         }, 1000);
     };
 
@@ -94,8 +114,8 @@ const ProductDetail = () => {
                                             key={size}
                                             onClick={() => setSelectedSize(size)}
                                             className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all ${selectedSize === size
-                                                    ? "border-black bg-black text-white"
-                                                    : "border-gray-200 hover:border-gray-300 text-gray-700"
+                                                ? "border-black bg-black text-white"
+                                                : "border-gray-200 hover:border-gray-300 text-gray-700"
                                                 }`}
                                         >
                                             {size}
@@ -115,8 +135,8 @@ const ProductDetail = () => {
                                             key={color}
                                             onClick={() => setSelectedColor(color)}
                                             className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all ${selectedColor === color
-                                                    ? "border-black bg-black text-white"
-                                                    : "border-gray-200 hover:border-gray-300 text-gray-700"
+                                                ? "border-black bg-black text-white"
+                                                : "border-gray-200 hover:border-gray-300 text-gray-700"
                                                 }`}
                                         >
                                             {color}
@@ -146,7 +166,7 @@ const ProductDetail = () => {
                         </button>
                         <button className="px-6 py-4 rounded-xl border border-gray-200 hover:bg-gray-50 transition-colors">
                             <span className="sr-only">Save for later</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-heart"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5 4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z" /></svg>
+                            <Heart className="w-6 h-6" />
                         </button>
                     </div>
 

@@ -169,14 +169,14 @@ export const products = [
 export const users = [
     {
         id: "u1",
-        name: "John Doe",
+        name: "Sarah Johnson",
         email: "user@example.com",
         password: "password",
         role: "user",
     },
     {
         id: "a1",
-        name: "Admin User",
+        name: "Administrator",
         email: "admin@example.com",
         password: "password",
         role: "admin",

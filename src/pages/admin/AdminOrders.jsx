@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { orders as initialOrders } from "../../data/mockData";
+import { useState, useEffect } from "react";
+import { dataLayer } from "../../lib/dataLayer";
 import { Eye, Truck, CheckCircle, Clock, XCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -19,14 +19,25 @@ import {
 } from "@/components/ui/table";
 
 const AdminOrders = () => {
-    const [orders, setOrders] = useState(initialOrders);
+    const [orders, setOrders] = useState([]);
 
-    const handleStatusChange = (orderId, newStatus) => {
+    const loadOrders = async () => {
+        const data = await dataLayer.getAllOrders();
+        setOrders(data);
+    };
+
+    useEffect(() => {
+        loadOrders();
+    }, []);
+
+    const handleStatusChange = async (orderId, newStatus) => {
+        // Optimistic update
         setOrders(
             orders.map((order) =>
                 order.id === orderId ? { ...order, status: newStatus } : order
             )
         );
+        await dataLayer.updateOrderStatus(orderId, newStatus);
     };
 
     const getStatusColor = (status) => {
@@ -46,7 +57,12 @@ const AdminOrders = () => {
 
     return (
         <div className="p-6">
-            <h1 className="text-2xl font-bold mb-6">Orders</h1>
+            <div className="flex justify-between items-center mb-6">
+                <h1 className="text-2xl font-bold">Orders</h1>
+                <Button onClick={loadOrders} variant="outline" size="sm" className="gap-2">
+                    <Clock className="w-4 h-4" /> Refresh
+                </Button>
+            </div>
 
             <div className="bg-white rounded-lg border shadow-sm">
                 <Table>

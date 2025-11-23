@@ -1,5 +1,5 @@
 import { PlusIcon, XCircleIcon } from "lucide-react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { FlipReveal, FlipRevealItem } from "@/components/gsap/flip-reveal";
 import { Input } from "@/components/ui/input";
@@ -13,15 +13,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { products } from "@/data/mockData";
-
-const categories = [...new Set(products.map((item) => item.category))];
+import { dataLayer } from "@/lib/dataLayer";
 
 const ProductFilter = () => {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState({
     search: "",
     category: "",
   });
+
+  useEffect(() => {
+    const loadProducts = async () => {
+      const data = await dataLayer.getProducts();
+      setProducts(data);
+      setLoading(false);
+    };
+    loadProducts();
+  }, []);
+
+  const categories = useMemo(() => [...new Set(products.map((item) => item.category))], [products]);
 
   const isEligible = useCallback(
     (product) => {
@@ -36,9 +47,10 @@ const ProductFilter = () => {
   );
 
   const visibleProductKeys = useMemo(() => {
+    if (loading) return [];
     if (!filter.search && !filter.category) return ["all"];
     return products.filter(isEligible).map((product) => product.sku);
-  }, [filter.category, filter.search, isEligible]);
+  }, [filter.category, filter.search, isEligible, products, loading]);
 
   return (
     <div className="bg-background container min-h-280 py-8 sm:py-12 xl:py-20">
@@ -78,64 +90,71 @@ const ProductFilter = () => {
           </Select>
         </div>
       </div>
+
       <div className="mt-4 lg:mt-6">
-        <div className="flex items-center justify-between gap-2 max-sm:text-sm">
-          <span className="">Here's What We Found...</span>
-          {visibleProductKeys[0] !== "all" && (
-            <button
-              className="text-muted-foreground hover:text-foreground flex cursor-pointer items-center gap-1.5"
-              onClick={() => setFilter({ search: "", category: "" })}>
-              <XCircleIcon className="size-3.5" />
-              <span>Clear filter</span>
-            </button>
-          )}
-        </div>
-        {visibleProductKeys[0] === "all" || visibleProductKeys.length > 0 ? (
-          <FlipReveal
-            className="mt-3 grid grid-cols-2 gap-x-4 gap-y-6 sm:gap-x-6 sm:gap-y-8 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5"
-            keys={visibleProductKeys}
-            showClass="flex"
-            hideClass="hidden">
-            {products.map((product) => (
-              <FlipRevealItem flipKey={product.sku} key={product.sku}>
-                <Link to={`/product/${product.sku}`} className="group relative w-full cursor-pointer block">
-                  <div className="bg-muted absolute -inset-2 scale-50 rounded-md opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100"></div>
-                  <div className="relative">
-                    <div className="relative">
-                      <img
-                        src={product.image}
-                        alt={product.name}
-                        className="h-32 w-full rounded-md object-cover sm:h-40 xl:h-50"
-                      />
-                      <div className="bg-background absolute end-1 bottom-1 z-1 flex items-center gap-0.5 rounded px-1 py-0.5 text-xs opacity-0 transition-all group-hover:opacity-100">
-                        <PlusIcon className="size-3" />
-                        Add Item
-                      </div>
-                    </div>
-                    <div className="mt-3 flex items-end justify-between gap-1">
-                      <div>
-                        <p className="text-muted-foreground font-mono text-[10px]/none tracking-wider uppercase">
-                          {product.category}
-                        </p>
-                        <p className="mt-1 line-clamp-1 leading-none font-medium max-sm:text-sm">
-                          {product.name}
-                        </p>
-                      </div>
-                      <p>
-                        <sup className="text-muted-foreground">$</sup>
-                        <span className="text-xl font-medium">{product.price}</span>
-                      </p>
-                    </div>
-                  </div>
-                </Link>
-              </FlipRevealItem>
-            ))}
-          </FlipReveal>
+        {loading ? (
+          <div className="text-center py-12">Loading products...</div>
         ) : (
-          <div className="text-muted-foreground mt-12 text-center">No products found</div>
+          <>
+            <div className="flex items-center justify-between gap-2 max-sm:text-sm">
+              <span className="">Here's What We Found...</span>
+              {visibleProductKeys[0] !== "all" && (
+                <button
+                  className="text-muted-foreground hover:text-foreground flex cursor-pointer items-center gap-1.5"
+                  onClick={() => setFilter({ search: "", category: "" })}>
+                  <XCircleIcon className="size-3.5" />
+                  <span>Clear filter</span>
+                </button>
+              )}
+            </div>
+            {visibleProductKeys[0] === "all" || visibleProductKeys.length > 0 ? (
+              <FlipReveal
+                className="mt-3 grid grid-cols-2 gap-x-4 gap-y-6 sm:gap-x-6 sm:gap-y-8 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5"
+                keys={visibleProductKeys}
+                showClass="flex"
+                hideClass="hidden">
+                {products.map((product) => (
+                  <FlipRevealItem flipKey={product.sku} key={product.sku}>
+                    <Link to={`/product/${product.sku}`} className="group relative w-full cursor-pointer block">
+                      <div className="bg-muted absolute -inset-2 scale-50 rounded-md opacity-0 transition-all group-hover:scale-100 group-hover:opacity-100"></div>
+                      <div className="relative">
+                        <div className="relative">
+                          <img
+                            src={product.image}
+                            alt={product.name}
+                            className="h-32 w-full rounded-md object-cover sm:h-40 xl:h-50"
+                          />
+                          <div className="bg-background absolute end-1 bottom-1 z-1 flex items-center gap-0.5 rounded px-1 py-0.5 text-xs opacity-0 transition-all group-hover:opacity-100">
+                            <PlusIcon className="size-3" />
+                            Add Item
+                          </div>
+                        </div>
+                        <div className="mt-3 flex items-end justify-between gap-1">
+                          <div>
+                            <p className="text-muted-foreground font-mono text-[10px]/none tracking-wider uppercase">
+                              {product.category}
+                            </p>
+                            <p className="mt-1 line-clamp-1 leading-none font-medium max-sm:text-sm">
+                              {product.name}
+                            </p>
+                          </div>
+                          <p>
+                            <sup className="text-muted-foreground">$</sup>
+                            <span className="text-xl font-medium">{product.price}</span>
+                          </p>
+                        </div>
+                      </div>
+                    </Link>
+                  </FlipRevealItem>
+                ))}
+              </FlipReveal>
+            ) : (
+              <div className="text-muted-foreground mt-12 text-center">No products found</div>
+            )}
+          </>
         )}
       </div>
-    </div>
+    </div >
   );
 };
 

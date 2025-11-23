@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { users } from "../data/mockData";
+import { dataLayer } from "../lib/dataLayer";
 
 const AuthContext = createContext();
 
@@ -15,17 +15,19 @@ export const AuthProvider = ({ children }) => {
         }
     }, []);
 
-    const login = (email, password) => {
-        const foundUser = users.find(
-            (u) => u.email === email && u.password === password
-        );
-        if (foundUser) {
-            setUser(foundUser);
-            setIsAuthenticated(true);
-            localStorage.setItem("user", JSON.stringify(foundUser));
-            return { success: true };
+    const login = async (email, password) => {
+        try {
+            const response = await dataLayer.login(email, password);
+            if (response.success) {
+                setUser(response.user);
+                setIsAuthenticated(true);
+                localStorage.setItem("user", JSON.stringify(response.user));
+                return response;
+            }
+            return response;
+        } catch (error) {
+            return { success: false, message: "An error occurred during login" };
         }
-        return { success: false, message: "Invalid credentials" };
     };
 
     const logout = () => {

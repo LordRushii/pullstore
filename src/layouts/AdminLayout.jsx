@@ -1,5 +1,5 @@
 import { Link, Outlet, useNavigate } from "react-router-dom";
-import { LayoutDashboard, LogOut, Store, Package, Tags, ShoppingBag } from "lucide-react";
+import { LayoutDashboard, LogOut, Package, Tags, ShoppingBag, PlusCircle } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 
 const AdminLayout = () => {
@@ -36,6 +36,13 @@ const AdminLayout = () => {
                         <span className="font-medium">Products</span>
                     </Link>
                     <Link
+                        to="/admin/add-product"
+                        className="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-blue-600 rounded-lg transition-colors"
+                    >
+                        <PlusCircle className="w-5 h-5" />
+                        <span className="font-medium">Add Product</span>
+                    </Link>
+                    <Link
                         to="/admin/categories"
                         className="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-blue-600 rounded-lg transition-colors"
                     >
@@ -48,13 +55,6 @@ const AdminLayout = () => {
                     >
                         <ShoppingBag className="w-5 h-5" />
                         <span className="font-medium">Orders</span>
-                    </Link>
-                    <Link
-                        to="/"
-                        className="flex items-center gap-3 px-4 py-3 text-gray-600 hover:bg-gray-50 hover:text-blue-600 rounded-lg transition-colors"
-                    >
-                        <Store className="w-5 h-5" />
-                        <span className="font-medium">Storefront</span>
                     </Link>
                 </nav>
 

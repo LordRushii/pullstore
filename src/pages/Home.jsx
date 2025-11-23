@@ -1,9 +1,18 @@
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import { products } from "../data/mockData";
+import { useState, useEffect } from "react";
+import { dataLayer } from "../lib/dataLayer";
 
 const Home = () => {
-    const featuredProducts = products.slice(0, 4);
+    const [featuredProducts, setFeaturedProducts] = useState([]);
+
+    useEffect(() => {
+        const loadProducts = async () => {
+            const products = await dataLayer.getProducts();
+            setFeaturedProducts(products.slice(0, 4));
+        };
+        loadProducts();
+    }, []);
 
     return (
         <div className="flex flex-col min-h-screen">
