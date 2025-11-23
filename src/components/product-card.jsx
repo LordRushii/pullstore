@@ -1,175 +1,91 @@
-import { useRef, useState } from "react";
-import { ChevronDown, Ruler, ShoppingCart } from "lucide-react";
-import { useGSAP } from "@gsap/react";
+import { Link } from "react-router-dom";
+import { ShoppingCart } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { useRef } from "react";
 import gsap from "gsap";
-import { SpringButton } from "./gsap/spring-button";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@radix-ui/react-tooltip";
-import { cn } from "@/lib/utils";
+import { useGSAP } from "@gsap/react";
 
-const ProductCard = () => {
-  const [infoVisible, setInfoVisible] = useState(false);
-  const contentRef = useRef(null);
-  const { contextSafe } = useGSAP();
+const ProductCard = ({ product }) => {
+  const cardRef = useRef(null);
+  const imageRef = useRef(null);
+  const overlayRef = useRef(null);
 
-  const toggleProductInfo = contextSafe(() => {
-    const content = contentRef.current;
-    if (!content) return;
+  // Fallback if no product is passed (for dev/preview)
+  if (!product) {
+    product = {
+      sku: "demo-1",
+      name: "Classic White Tee",
+      price: 29,
+      image: "https://images.unsplash.com/photo-1589810635657-232948472d98?w=1000",
+      category: "Apparel",
+      inStock: true
+    };
+  }
 
-    if (infoVisible) {
-      // Hide
-      gsap.to(content, {
-        height: 0,
-        opacity: 0,
-        filter: "blur(4px)",
-        duration: 0.6,
-        ease: "circ.in",
-        onComplete: () => gsap.set(content, { display: "none" }),
-      });
-    } else {
-      // Show
-      gsap.set(content, { display: "block", height: "auto" });
-      const height = content.offsetHeight;
-      gsap.fromTo(
-        content,
-        { height: 0, opacity: 0, filter: "blur(4px)" },
-        {
-          height,
-          opacity: 1,
-          filter: "blur(0px)",
-          duration: 0.9,
-          ease: "expo.out",
-        }
-      );
-    }
-    setInfoVisible(!infoVisible);
+  const { contextSafe } = useGSAP({ scope: cardRef });
+
+  const onEnter = contextSafe(() => {
+    gsap.to(imageRef.current, { scale: 1.1, filter: "grayscale(0%)", duration: 0.5, ease: "power2.out" });
+    gsap.to(overlayRef.current, { opacity: 1, duration: 0.3, ease: "power2.out" });
+  });
+
+  const onLeave = contextSafe(() => {
+    gsap.to(imageRef.current, { scale: 1, filter: "grayscale(100%)", duration: 0.5, ease: "power2.out" });
+    gsap.to(overlayRef.current, { opacity: 0, duration: 0.3, ease: "power2.out" });
   });
 
   return (
-    <div className="group w-80 cursor-pointer">
-      <div className="relative">
+    <Link
+      to={`/product/${product.sku}`}
+      className="group block relative"
+      ref={cardRef}
+      onMouseEnter={onEnter}
+      onMouseLeave={onLeave}
+      aria-label={`View details for ${product.name}`}
+    >
+      {/* Image Container */}
+      <div className="relative overflow-hidden aspect-[3/4] border-2 border-transparent group-hover:border-border transition-all duration-300">
         <img
-          src="https://images.unsplash.com/photo-1589810635657-232948472d98?w=1000"
-          alt="Classic White Tee"
-          className="w-full h-96 object-cover rounded-xl shadow-lg"
+          ref={imageRef}
+          src={product.image}
+          alt={product.name}
+          loading="lazy"
+          className="w-full h-full object-cover grayscale scale-100"
         />
 
+        {/* Overlay Actions */}
         <div
-          className={cn(
-            "absolute inset-x-4 bottom-4 rounded-lg bg-white/60 backdrop-blur-xs transition-all",
-            infoVisible && "bg-white/90"
-          )}
+          ref={overlayRef}
+          className="absolute inset-0 bg-black/10 flex items-center justify-center opacity-0"
         >
-          <div
-            onClick={toggleProductInfo}
-            role="button"
-            tabIndex={0}
-            className={cn(
-              "flex items-start justify-between p-4 hover:bg-white/70 transition-all rounded-lg",
-              infoVisible && "rounded-t-lg"
-            )}
-          >
-            <div>
-              <p
-                className={cn(
-                  "font-semibold text-lg transition-all",
-                  infoVisible && "text-2xl"
-                )}
-              >
-                Classic White Tee
-              </p>
-              <p className="text-2xl font-bold mt-1">
-                $<span className={infoVisible ? "text-3xl" : "text-2xl"}>29</span>
-              </p>
-            </div>
-            <div className="bg-white rounded-full p-1 shadow-md">
-              <ChevronDown
-                className={cn(
-                  "w-5 h-5 text-gray-600 transition-transform",
-                  infoVisible && "rotate-180"
-                )}
-              />
-            </div>
-          </div>
-
-          <div ref={contentRef} className="hidden overflow-hidden">
-            <div className="px-4 pb-4">
-              {/* Sizes */}
-              <div className="flex justify-between items-center mb-2">
-                <span className="font-medium text-gray-600">Sizes</span>
-                <div className="flex items-center gap-1 text-xs text-gray-600">
-                  <Ruler className="w-4 h-4" />
-                  Chart
-                </div>
-              </div>
-              <div className="flex gap-2 mb-4">
-                {["Small", "Medium"].map((size) => (
-                  <button key={size} className="px-3 py-1 border rounded text-sm hover:bg-gray-100 transition">
-                    {size}
-                  </button>
-                ))}
-                <button className="px-3 py-1 border rounded text-sm opacity-50 grayscale" disabled>
-                  Large
-                </button>
-              </div>
-
-              {/* Colors */}
-              <div className="flex justify-between items-center mb-2">
-                <span className="font-medium text-gray-600">Colors</span>
-                <span className="text-xs text-gray-600 hover:underline cursor-pointer">
-                  Custom color?
-                </span>
-              </div>
-
-              <TooltipProvider>
-                <div className="flex gap-3 mb-5">
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="w-8 h-8 rounded-full bg-red-500 shadow cursor-pointer ring-2 ring-offset-2 ring-transparent hover:ring-red-500 transition" />
-                    </TooltipTrigger>
-                    <TooltipContent>Red</TooltipContent>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="w-8 h-8 rounded-full bg-teal-500 shadow cursor-pointer ring-2 ring-offset-2 ring-transparent hover:ring-teal-500 transition" />
-                    </TooltipTrigger>
-                    <TooltipContent>Teal</TooltipContent>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="w-8 h-8 rounded-full bg-blue-400 opacity-40 shadow cursor-not-allowed" />
-                    </TooltipTrigger>
-                    <TooltipContent>Blue (Out of stock)</TooltipContent>
-                  </Tooltip>
-
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <div className="w-8 h-8 rounded-full bg-pink-500 shadow cursor-pointer ring-2 ring-offset-2 ring-transparent hover:ring-pink-500 transition" />
-                    </TooltipTrigger>
-                    <TooltipContent>Pink</TooltipContent>
-                  </Tooltip>
-                </div>
-              </TooltipProvider>
-
-              {/* Add to cart */}
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">In stock</span>
-                <SpringButton className="bg-black text-white px-5 py-2 rounded-lg font-medium flex items-center gap-2 hover:bg-gray-800">
-                  <ShoppingCart className="w-4 h-4" />
-                  Add to cart
-                </SpringButton>
-              </div>
-            </div>
-          </div>
+          <Button variant="brutalist" size="icon" className="rounded-full" aria-label="Add to cart">
+            <ShoppingCart className="w-5 h-5" />
+          </Button>
         </div>
+
+        {/* Badges */}
+        {!product.inStock && (
+          <div className="absolute top-2 right-2 bg-destructive text-destructive-foreground text-xs font-bold uppercase px-2 py-1 border border-destructive-foreground">
+            Out of Stock
+          </div>
+        )}
       </div>
-    </div>
+
+      {/* Product Info */}
+      <div className="mt-4 flex justify-between items-start">
+        <div>
+          <h3 className="font-heading font-bold text-lg uppercase tracking-tight group-hover:text-accent transition-colors">
+            {product.name}
+          </h3>
+          <p className="text-xs text-muted-foreground uppercase tracking-widest">
+            {product.category}
+          </p>
+        </div>
+        <p className="font-bold text-lg">
+          ${product.price}
+        </p>
+      </div>
+    </Link>
   );
 };
 

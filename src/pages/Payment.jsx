@@ -4,8 +4,7 @@ import { useCart } from "../context/CartContext";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription, CardFooter } from "@/components/ui/card";
-import { CreditCard, Lock } from "lucide-react";
+import { CreditCard, Lock, ShieldCheck } from "lucide-react";
 import gsap from "gsap";
 
 const Payment = () => {
@@ -56,76 +55,90 @@ const Payment = () => {
     };
 
     return (
-        <div className="min-h-[80vh] flex items-center justify-center px-4 py-12 bg-gray-50/50" ref={containerRef}>
-            <Card className="w-full max-w-md payment-fade-in">
-                <CardHeader>
-                    <CardTitle className="flex items-center gap-2">
-                        <CreditCard className="w-6 h-6" />
-                        Payment Details
-                    </CardTitle>
-                    <CardDescription>
-                        Complete your purchase of ${total.toFixed(2)}
-                    </CardDescription>
-                </CardHeader>
-                <CardContent>
-                    <form id="payment-form" onSubmit={handlePayment} className="space-y-6">
+        <div className="min-h-screen bg-background py-12 flex items-center justify-center" ref={containerRef}>
+            <div className="w-full max-w-2xl px-4">
+                <div className="border-2 border-border bg-background p-8 md:p-12 payment-fade-in relative overflow-hidden">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-foreground" />
+
+                    <div className="flex items-center justify-between mb-12">
+                        <h1 className="text-4xl font-heading font-bold uppercase tracking-tighter">Payment</h1>
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                            <Lock className="w-5 h-5" />
+                            <span className="text-xs font-bold uppercase tracking-widest">Secure</span>
+                        </div>
+                    </div>
+
+                    <div className="mb-8 p-6 bg-secondary/10 border-2 border-border flex justify-between items-center">
+                        <span className="font-bold uppercase text-sm tracking-widest text-muted-foreground">Total Amount</span>
+                        <span className="font-heading font-bold text-3xl">${total.toFixed(2)}</span>
+                    </div>
+
+                    <form id="payment-form" onSubmit={handlePayment} className="space-y-8">
                         <div className="space-y-2">
-                            <Label htmlFor="cardName">Cardholder Name</Label>
+                            <Label htmlFor="cardName" className="uppercase font-bold text-xs tracking-widest">Cardholder Name</Label>
                             <Input
                                 id="cardName"
-                                placeholder="John Doe"
+                                placeholder="JOHN DOE"
                                 required
+                                className="rounded-none border-2 border-border h-12 px-4 font-bold uppercase focus-visible:ring-0 focus-visible:border-foreground"
                             />
                         </div>
 
                         <div className="space-y-2">
-                            <Label htmlFor="cardNumber">Card Number</Label>
+                            <Label htmlFor="cardNumber" className="uppercase font-bold text-xs tracking-widest">Card Number</Label>
                             <div className="relative">
                                 <Input
                                     id="cardNumber"
                                     placeholder="0000 0000 0000 0000"
                                     required
                                     maxLength={19}
+                                    className="rounded-none border-2 border-border h-12 px-4 font-bold uppercase focus-visible:ring-0 focus-visible:border-foreground pr-10"
                                 />
-                                <Lock className="w-4 h-4 text-gray-400 absolute right-3 top-3" />
+                                <CreditCard className="w-5 h-5 text-muted-foreground absolute right-4 top-3.5" />
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid grid-cols-2 gap-6">
                             <div className="space-y-2">
-                                <Label htmlFor="expiry">Expiry Date</Label>
+                                <Label htmlFor="expiry" className="uppercase font-bold text-xs tracking-widest">Expiry Date</Label>
                                 <Input
                                     id="expiry"
                                     placeholder="MM/YY"
                                     required
                                     maxLength={5}
+                                    className="rounded-none border-2 border-border h-12 px-4 font-bold uppercase focus-visible:ring-0 focus-visible:border-foreground"
                                 />
                             </div>
                             <div className="space-y-2">
-                                <Label htmlFor="cvc">CVC</Label>
+                                <Label htmlFor="cvc" className="uppercase font-bold text-xs tracking-widest">CVC</Label>
                                 <Input
                                     id="cvc"
                                     placeholder="123"
                                     required
                                     maxLength={3}
                                     type="password"
+                                    className="rounded-none border-2 border-border h-12 px-4 font-bold uppercase focus-visible:ring-0 focus-visible:border-foreground"
                                 />
                             </div>
                         </div>
+
+                        <Button
+                            className="w-full h-16 text-lg mt-4"
+                            size="lg"
+                            type="submit"
+                            variant="brutalist"
+                            disabled={isProcessing}
+                        >
+                            {isProcessing ? "PROCESSING..." : `PAY $${total.toFixed(2)}`}
+                        </Button>
                     </form>
-                </CardContent>
-                <CardFooter>
-                    <Button
-                        className="w-full"
-                        size="lg"
-                        type="submit"
-                        form="payment-form"
-                        disabled={isProcessing}
-                    >
-                        {isProcessing ? "Processing..." : `Pay $${total.toFixed(2)}`}
-                    </Button>
-                </CardFooter>
-            </Card>
+
+                    <div className="mt-8 flex justify-center items-center gap-2 text-muted-foreground">
+                        <ShieldCheck className="w-4 h-4" />
+                        <span className="text-xs font-bold uppercase tracking-widest">Encrypted Transaction</span>
+                    </div>
+                </div>
+            </div>
         </div>
     );
 };

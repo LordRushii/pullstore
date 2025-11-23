@@ -77,43 +77,45 @@ const AdminCategories = () => {
     };
 
     return (
-        <div className="p-6">
-            <div className="flex justify-between items-center mb-6">
-                <h1 className="text-2xl font-bold">Categories</h1>
-                <Button onClick={handleAdd} className="flex items-center gap-2">
-                    <Plus className="w-4 h-4" /> Add Category
+        <div className="p-6 md:p-12 min-h-screen bg-background">
+            <div className="flex justify-between items-center mb-12">
+                <h1 className="text-5xl font-heading font-bold uppercase tracking-tighter">Categories</h1>
+                <Button onClick={handleAdd} className="flex items-center gap-2 h-12 px-6" variant="brutalist">
+                    <Plus className="w-5 h-5" /> ADD CATEGORY
                 </Button>
             </div>
 
-            <div className="bg-white rounded-lg border shadow-sm max-w-3xl">
+            <div className="bg-background border-2 border-border max-w-4xl">
                 <Table>
-                    <TableHeader>
-                        <TableRow>
-                            <TableHead>Name</TableHead>
-                            <TableHead>Product Count</TableHead>
-                            <TableHead className="text-right">Actions</TableHead>
+                    <TableHeader className="bg-secondary/10">
+                        <TableRow className="border-b-2 border-border hover:bg-transparent">
+                            <TableHead className="font-bold uppercase tracking-widest text-xs text-foreground h-12">Name</TableHead>
+                            <TableHead className="font-bold uppercase tracking-widest text-xs text-foreground">Product Count</TableHead>
+                            <TableHead className="text-right font-bold uppercase tracking-widest text-xs text-foreground">Actions</TableHead>
                         </TableRow>
                     </TableHeader>
                     <TableBody>
                         {categories.map((category) => (
-                            <TableRow key={category.id}>
-                                <TableCell className="font-medium">{category.name}</TableCell>
-                                <TableCell>{category.count}</TableCell>
+                            <TableRow key={category.id} className="border-b border-border hover:bg-secondary/5 group">
+                                <TableCell className="font-bold uppercase text-lg">{category.name}</TableCell>
+                                <TableCell className="font-mono font-bold">{category.count}</TableCell>
                                 <TableCell className="text-right">
                                     <div className="flex justify-end gap-2">
                                         <Button
                                             variant="ghost"
                                             size="icon"
                                             onClick={() => handleEdit(category)}
+                                            className="hover:bg-accent hover:text-accent-foreground rounded-none"
                                         >
-                                            <Pencil className="w-4 h-4 text-blue-500" />
+                                            <Pencil className="w-4 h-4" />
                                         </Button>
                                         <Button
                                             variant="ghost"
                                             size="icon"
                                             onClick={() => handleDelete(category.id)}
+                                            className="hover:bg-destructive hover:text-destructive-foreground rounded-none"
                                         >
-                                            <Trash2 className="w-4 h-4 text-red-500" />
+                                            <Trash2 className="w-4 h-4" />
                                         </Button>
                                     </div>
                                 </TableCell>
@@ -125,23 +127,23 @@ const AdminCategories = () => {
 
             {/* Category Dialog */}
             {isDialogOpen && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-                    <div className="bg-white rounded-lg p-6 w-full max-w-md">
-                        <div className="flex justify-between items-center mb-4">
-                            <h2 className="text-xl font-bold">
+                <div className="fixed inset-0 bg-background/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
+                    <div className="bg-background border-2 border-border p-8 w-full max-w-md shadow-2xl">
+                        <div className="flex justify-between items-center mb-8 border-b-2 border-border pb-4">
+                            <h2 className="text-2xl font-heading font-bold uppercase">
                                 {editingCategory ? "Edit Category" : "Add Category"}
                             </h2>
                             <button
                                 onClick={() => setIsDialogOpen(false)}
-                                className="p-1 hover:bg-gray-100 rounded"
+                                className="p-2 hover:bg-destructive hover:text-destructive-foreground transition-colors border-2 border-transparent hover:border-destructive"
                             >
-                                <X className="w-5 h-5" />
+                                <X className="w-6 h-6" />
                             </button>
                         </div>
 
-                        <form onSubmit={handleSubmit} className="space-y-4">
-                            <div>
-                                <Label htmlFor="name">Category Name</Label>
+                        <form onSubmit={handleSubmit} className="space-y-6">
+                            <div className="space-y-2">
+                                <Label htmlFor="name" className="uppercase font-bold text-xs tracking-widest">Category Name</Label>
                                 <Input
                                     id="name"
                                     value={formData.name}
@@ -149,20 +151,21 @@ const AdminCategories = () => {
                                         setFormData({ name: e.target.value })
                                     }
                                     required
-                                    placeholder="e.g., Electronics, Apparel"
+                                    placeholder="E.G., ELECTRONICS, APPAREL"
+                                    className="rounded-none border-2 border-border h-12 px-4 font-bold uppercase focus-visible:ring-0 focus-visible:border-foreground"
                                 />
                             </div>
 
-                            <div className="flex gap-2 pt-4">
+                            <div className="flex gap-4 pt-4 border-t-2 border-border">
                                 <Button
                                     type="button"
                                     variant="outline"
                                     onClick={() => setIsDialogOpen(false)}
-                                    className="flex-1"
+                                    className="flex-1 h-12 uppercase font-bold border-2"
                                 >
                                     Cancel
                                 </Button>
-                                <Button type="submit" className="flex-1">
+                                <Button type="submit" className="flex-1 h-12" variant="brutalist">
                                     {editingCategory ? "Update" : "Create"}
                                 </Button>
                             </div>

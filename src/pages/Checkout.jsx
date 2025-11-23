@@ -52,52 +52,54 @@ const Checkout = () => {
 
     if (cartItems.length === 0) {
         return (
-            <div className="min-h-[60vh] flex flex-col items-center justify-center px-4">
-                <h2 className="text-2xl font-bold mb-4">Your cart is empty</h2>
-                <Button onClick={() => navigate("/shop")}>Continue Shopping</Button>
+            <div className="min-h-[60vh] flex flex-col items-center justify-center px-4 bg-background">
+                <h2 className="text-4xl font-heading font-bold uppercase mb-4">Your cart is empty</h2>
+                <Button onClick={() => navigate("/shop")} size="lg">Continue Shopping</Button>
             </div>
         );
     }
 
     return (
-        <div className="container mx-auto px-4 py-12" ref={containerRef}>
-            <h1 className="text-3xl font-bold mb-8 checkout-fade-in">Checkout</h1>
+        <div className="min-h-screen bg-background py-12" ref={containerRef}>
+            <div className="container-wide">
+                <h1 className="text-5xl md:text-7xl font-heading font-bold uppercase tracking-tighter mb-12 border-b-2 border-border pb-6 checkout-fade-in">
+                    Checkout
+                </h1>
 
-            <div className="grid lg:grid-cols-3 gap-8">
-                <div className="lg:col-span-2 checkout-fade-in">
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Shipping Information</CardTitle>
-                        </CardHeader>
-                        <CardContent>
+                <div className="grid lg:grid-cols-3 gap-12 lg:gap-24">
+                    <div className="lg:col-span-2 checkout-fade-in">
+                        <div className="border-2 border-border bg-background p-8">
+                            <h2 className="text-2xl font-heading font-bold uppercase mb-8">Shipping Information</h2>
                             <form id="checkout-form" onSubmit={handleSubmit} className="space-y-6">
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <Label htmlFor="firstName">First Name</Label>
+                                        <Label htmlFor="firstName" className="uppercase font-bold text-xs tracking-widest">First Name</Label>
                                         <Input
                                             id="firstName"
                                             name="firstName"
                                             required
                                             value={formData.firstName}
                                             onChange={handleInputChange}
-                                            placeholder="John"
+                                            placeholder="JOHN"
+                                            className="rounded-none border-2 border-border h-12 px-4 font-bold uppercase focus-visible:ring-0 focus-visible:border-foreground"
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <Label htmlFor="lastName">Last Name</Label>
+                                        <Label htmlFor="lastName" className="uppercase font-bold text-xs tracking-widest">Last Name</Label>
                                         <Input
                                             id="lastName"
                                             name="lastName"
                                             required
                                             value={formData.lastName}
                                             onChange={handleInputChange}
-                                            placeholder="Doe"
+                                            placeholder="DOE"
+                                            className="rounded-none border-2 border-border h-12 px-4 font-bold uppercase focus-visible:ring-0 focus-visible:border-foreground"
                                         />
                                     </div>
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="email">Email</Label>
+                                    <Label htmlFor="email" className="uppercase font-bold text-xs tracking-widest">Email</Label>
                                     <Input
                                         id="email"
                                         name="email"
@@ -105,36 +107,39 @@ const Checkout = () => {
                                         required
                                         value={formData.email}
                                         onChange={handleInputChange}
-                                        placeholder="john@example.com"
+                                        placeholder="JOHN@EXAMPLE.COM"
+                                        className="rounded-none border-2 border-border h-12 px-4 font-bold uppercase focus-visible:ring-0 focus-visible:border-foreground"
                                     />
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="address">Address</Label>
+                                    <Label htmlFor="address" className="uppercase font-bold text-xs tracking-widest">Address</Label>
                                     <Input
                                         id="address"
                                         name="address"
                                         required
                                         value={formData.address}
                                         onChange={handleInputChange}
-                                        placeholder="123 Main St"
+                                        placeholder="123 MAIN ST"
+                                        className="rounded-none border-2 border-border h-12 px-4 font-bold uppercase focus-visible:ring-0 focus-visible:border-foreground"
                                     />
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-2 gap-6">
                                     <div className="space-y-2">
-                                        <Label htmlFor="city">City</Label>
+                                        <Label htmlFor="city" className="uppercase font-bold text-xs tracking-widest">City</Label>
                                         <Input
                                             id="city"
                                             name="city"
                                             required
                                             value={formData.city}
                                             onChange={handleInputChange}
-                                            placeholder="New York"
+                                            placeholder="NEW YORK"
+                                            className="rounded-none border-2 border-border h-12 px-4 font-bold uppercase focus-visible:ring-0 focus-visible:border-foreground"
                                         />
                                     </div>
                                     <div className="space-y-2">
-                                        <Label htmlFor="zipCode">ZIP Code</Label>
+                                        <Label htmlFor="zipCode" className="uppercase font-bold text-xs tracking-widest">ZIP Code</Label>
                                         <Input
                                             id="zipCode"
                                             name="zipCode"
@@ -142,73 +147,71 @@ const Checkout = () => {
                                             value={formData.zipCode}
                                             onChange={handleInputChange}
                                             placeholder="10001"
+                                            className="rounded-none border-2 border-border h-12 px-4 font-bold uppercase focus-visible:ring-0 focus-visible:border-foreground"
                                         />
                                     </div>
                                 </div>
 
                                 <div className="space-y-2">
-                                    <Label htmlFor="country">Country</Label>
+                                    <Label htmlFor="country" className="uppercase font-bold text-xs tracking-widest">Country</Label>
                                     <Input
                                         id="country"
                                         name="country"
                                         required
                                         value={formData.country}
                                         onChange={handleInputChange}
-                                        placeholder="United States"
+                                        placeholder="UNITED STATES"
+                                        className="rounded-none border-2 border-border h-12 px-4 font-bold uppercase focus-visible:ring-0 focus-visible:border-foreground"
                                     />
                                 </div>
                             </form>
-                        </CardContent>
-                    </Card>
-                </div>
+                        </div>
+                    </div>
 
-                <div className="lg:col-span-1 checkout-fade-in">
-                    <Card className="sticky top-24">
-                        <CardHeader>
-                            <CardTitle>Order Summary</CardTitle>
-                        </CardHeader>
-                        <CardContent className="space-y-4">
-                            <div className="space-y-2">
+                    <div className="lg:col-span-1 checkout-fade-in">
+                        <div className="border-2 border-border bg-secondary/10 p-8 sticky top-24">
+                            <h2 className="text-2xl font-heading font-bold uppercase mb-8">Order Summary</h2>
+                            <div className="space-y-4 mb-8">
                                 {cartItems.map((item) => (
                                     <div key={item.id} className="flex justify-between text-sm">
-                                        <span className="text-gray-600">
-                                            {item.name} x {item.quantity}
+                                        <span className="text-muted-foreground font-bold uppercase">
+                                            {item.name} <span className="text-xs">x {item.quantity}</span>
                                         </span>
-                                        <span className="font-medium">
+                                        <span className="font-bold">
                                             ${(item.price * item.quantity).toFixed(2)}
                                         </span>
                                     </div>
                                 ))}
                             </div>
 
-                            <Separator />
+                            <div className="border-t-2 border-border my-6"></div>
 
-                            <div className="space-y-2">
-                                <div className="flex justify-between text-gray-600">
+                            <div className="space-y-2 mb-8 text-lg">
+                                <div className="flex justify-between text-muted-foreground">
                                     <span>Subtotal</span>
-                                    <span>${cartTotal.toFixed(2)}</span>
+                                    <span className="font-bold text-foreground">${cartTotal.toFixed(2)}</span>
                                 </div>
-                                <div className="flex justify-between text-gray-600">
+                                <div className="flex justify-between text-muted-foreground">
                                     <span>Shipping</span>
-                                    <span>${shipping.toFixed(2)}</span>
+                                    <span className="font-bold text-foreground">${shipping.toFixed(2)}</span>
                                 </div>
-                                <div className="flex justify-between font-bold text-lg pt-2">
+                                <div className="border-t-2 border-border pt-4 flex justify-between font-heading font-bold text-2xl uppercase">
                                     <span>Total</span>
                                     <span>${total.toFixed(2)}</span>
                                 </div>
                             </div>
-                        </CardContent>
-                        <CardFooter>
+
                             <Button
-                                className="w-full"
+                                className="w-full h-16 text-lg"
                                 size="lg"
                                 type="submit"
                                 form="checkout-form"
+                                variant="brutalist"
                             >
                                 Proceed to Payment
                             </Button>
-                        </CardFooter>
-                    </Card>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

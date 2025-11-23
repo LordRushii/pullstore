@@ -1,7 +1,8 @@
 import { useAuth } from "../context/AuthContext";
 import { dataLayer } from "../lib/dataLayer";
-import { Package, Truck, CheckCircle, Clock } from "lucide-react";
+import { Package, Truck, CheckCircle, Clock, User } from "lucide-react";
 import { useState, useEffect } from "react";
+import { Button } from "@/components/ui/button";
 
 const UserProfile = () => {
     const { user } = useAuth();
@@ -20,117 +21,115 @@ const UserProfile = () => {
     const getStatusIcon = (status) => {
         switch (status) {
             case "Delivered":
-                return <CheckCircle className="w-5 h-5 text-green-500" />;
+                return <CheckCircle className="w-5 h-5" />;
             case "Shipped":
-                return <Truck className="w-5 h-5 text-blue-500" />;
+                return <Truck className="w-5 h-5" />;
             case "Pending":
-                return <Clock className="w-5 h-5 text-orange-500" />;
+                return <Clock className="w-5 h-5" />;
             default:
-                return <Package className="w-5 h-5 text-gray-500" />;
-        }
-    };
-
-    const getStatusColor = (status) => {
-        switch (status) {
-            case "Delivered":
-                return "bg-green-50 text-green-700 border-green-100";
-            case "Shipped":
-                return "bg-blue-50 text-blue-700 border-blue-100";
-            case "Pending":
-                return "bg-orange-50 text-orange-700 border-orange-100";
-            default:
-                return "bg-gray-50 text-gray-700 border-gray-100";
+                return <Package className="w-5 h-5" />;
         }
     };
 
     if (!user) return null;
 
     return (
-        <div className="container mx-auto px-4 py-12">
-            <div className="max-w-4xl mx-auto">
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 mb-8">
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center text-2xl font-bold text-gray-500">
-                            {user.name.charAt(0)}
-                        </div>
-                        <div>
-                            <h1 className="text-2xl font-bold">{user.name}</h1>
-                            <p className="text-gray-500">{user.email}</p>
-                        </div>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div className="p-4 bg-gray-50 rounded-xl">
-                            <p className="text-sm text-gray-500 mb-1">Total Orders</p>
-                            <p className="text-2xl font-bold">{userOrders.length}</p>
-                        </div>
-                        <div className="p-4 bg-gray-50 rounded-xl">
-                            <p className="text-sm text-gray-500 mb-1">Member Since</p>
-                            <p className="text-2xl font-bold">2023</p>
-                        </div>
-                        <div className="p-4 bg-gray-50 rounded-xl">
-                            <p className="text-sm text-gray-500 mb-1">Status</p>
-                            <p className="text-2xl font-bold text-primary">Gold</p>
-                        </div>
-                    </div>
-                </div>
+        <div className="min-h-screen bg-background py-12">
+            <div className="container-wide">
+                <h1 className="text-5xl md:text-7xl font-heading font-bold uppercase tracking-tighter mb-12 border-b-2 border-border pb-6">
+                    Profile
+                </h1>
 
-                <h2 className="text-xl font-bold mb-6">Order History</h2>
-                <div className="space-y-6">
-                    {userOrders.length > 0 ? (
-                        userOrders.map((order) => (
-                            <div key={order.id} className="bg-white rounded-xl border border-gray-100 shadow-sm overflow-hidden">
-                                <div className="p-6 border-b border-gray-50 flex flex-wrap justify-between items-center gap-4">
-                                    <div>
-                                        <p className="text-sm text-gray-500 mb-1">Order ID</p>
-                                        <p className="font-medium">{order.id}</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-sm text-gray-500 mb-1">Date</p>
-                                        <p className="font-medium">{order.date}</p>
-                                    </div>
-                                    <div>
-                                        <p className="text-sm text-gray-500 mb-1">Total Amount</p>
-                                        <p className="font-medium">${order.total}</p>
-                                    </div>
-                                    <div className={`px-3 py-1 rounded-full border flex items-center gap-2 text-sm font-medium ${getStatusColor(order.status)}`}>
-                                        {getStatusIcon(order.status)}
-                                        {order.status}
-                                    </div>
+                <div className="grid lg:grid-cols-3 gap-12">
+                    {/* User Info Card */}
+                    <div className="lg:col-span-1">
+                        <div className="border-2 border-border bg-background p-8 sticky top-24">
+                            <div className="flex items-center gap-6 mb-8">
+                                <div className="w-20 h-20 border-2 border-foreground rounded-full flex items-center justify-center text-3xl font-heading font-bold uppercase bg-accent text-accent-foreground">
+                                    {user.name.charAt(0)}
                                 </div>
-                                <div className="p-6">
-                                    <div className="space-y-4">
-                                        {order.items.map((item, index) => (
-                                            <div key={index} className="flex items-center gap-4">
-                                                <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
-                                                    <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
-                                                </div>
-                                                <div className="flex-1">
-                                                    <h3 className="font-medium">{item.name}</h3>
-                                                    <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
-                                                </div>
-                                                <p className="font-medium">${item.price}</p>
-                                            </div>
-                                        ))}
-                                    </div>
-
-                                    {order.status === "Shipped" && (
-                                        <div className="mt-6 pt-6 border-t border-gray-50">
-                                            <div className="flex items-center gap-2 text-sm text-blue-600 bg-blue-50 p-3 rounded-lg">
-                                                <Truck className="w-4 h-4" />
-                                                <span>Your order is on the way! Expected delivery: Tomorrow</span>
-                                            </div>
-                                        </div>
-                                    )}
+                                <div>
+                                    <h2 className="text-2xl font-heading font-bold uppercase">{user.name}</h2>
+                                    <p className="text-muted-foreground font-mono text-sm">{user.email}</p>
                                 </div>
                             </div>
-                        ))
-                    ) : (
-                        <div className="text-center py-12 bg-white rounded-xl border border-gray-100">
-                            <Package className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                            <h3 className="text-lg font-medium mb-2">No orders yet</h3>
-                            <p className="text-gray-500">Start shopping to see your orders here.</p>
+
+                            <div className="space-y-4">
+                                <div className="p-4 border-2 border-border bg-secondary/10">
+                                    <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">Total Orders</p>
+                                    <p className="text-3xl font-heading font-bold">{userOrders.length}</p>
+                                </div>
+                                <div className="p-4 border-2 border-border bg-secondary/10">
+                                    <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">Member Since</p>
+                                    <p className="text-3xl font-heading font-bold">2023</p>
+                                </div>
+                                <div className="p-4 border-2 border-border bg-secondary/10">
+                                    <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">Status</p>
+                                    <p className="text-3xl font-heading font-bold text-accent">VIP</p>
+                                </div>
+                            </div>
                         </div>
-                    )}
+                    </div>
+
+                    {/* Order History */}
+                    <div className="lg:col-span-2">
+                        <h2 className="text-3xl font-heading font-bold uppercase mb-8">Order History</h2>
+                        <div className="space-y-8">
+                            {userOrders.length > 0 ? (
+                                userOrders.map((order) => (
+                                    <div key={order.id} className="border-2 border-border bg-background p-6 transition-all hover:border-foreground group">
+                                        <div className="flex flex-wrap justify-between items-start gap-4 mb-6 border-b-2 border-border pb-4">
+                                            <div>
+                                                <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">Order ID</p>
+                                                <p className="font-mono font-bold text-lg">#{order.id}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">Date</p>
+                                                <p className="font-mono font-bold text-lg">{order.date}</p>
+                                            </div>
+                                            <div>
+                                                <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">Total</p>
+                                                <p className="font-mono font-bold text-lg">${order.total}</p>
+                                            </div>
+                                            <div className="flex items-center gap-2 px-4 py-2 border-2 border-border font-bold uppercase text-sm">
+                                                {getStatusIcon(order.status)}
+                                                {order.status}
+                                            </div>
+                                        </div>
+
+                                        <div className="space-y-4">
+                                            {order.items.map((item, index) => (
+                                                <div key={index} className="flex items-center gap-4">
+                                                    <div className="w-16 h-16 border border-border bg-secondary/20 overflow-hidden">
+                                                        <img src={item.image} alt={item.name} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all" />
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <h3 className="font-bold uppercase text-sm">{item.name}</h3>
+                                                        <p className="text-xs text-muted-foreground font-mono">QTY: {item.quantity}</p>
+                                                    </div>
+                                                    <p className="font-bold font-mono">${item.price}</p>
+                                                </div>
+                                            ))}
+                                        </div>
+
+                                        {order.status === "Shipped" && (
+                                            <div className="mt-6 pt-4 border-t-2 border-border flex items-center gap-3 text-accent font-bold uppercase text-sm">
+                                                <Truck className="w-5 h-5" />
+                                                <span>In Transit • Arriving Soon</span>
+                                            </div>
+                                        )}
+                                    </div>
+                                ))
+                            ) : (
+                                <div className="text-center py-20 border-2 border-border border-dashed">
+                                    <Package className="w-16 h-16 text-muted-foreground mx-auto mb-6" />
+                                    <h3 className="text-2xl font-heading font-bold uppercase mb-2">No Orders Yet</h3>
+                                    <p className="text-muted-foreground mb-8">Start your collection today.</p>
+                                    <Button variant="outline" className="uppercase font-bold">Start Shopping</Button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

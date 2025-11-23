@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { dataLayer } from "../../lib/dataLayer";
-import { Loader2, Plus } from "lucide-react";
+import { Loader2, Plus, ArrowLeft } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const AddProduct = () => {
     const navigate = useNavigate();
@@ -64,199 +67,208 @@ const AddProduct = () => {
     };
 
     return (
-        <div className="p-6">
-            <div className="max-w-3xl mx-auto">
-                <div className="mb-6">
-                    <h1 className="text-3xl font-bold">Add New Product</h1>
-                    <p className="text-gray-500 mt-1">Create a new product for your store</p>
+        <div className="p-6 md:p-12 min-h-screen bg-background">
+            <div className="max-w-4xl mx-auto">
+                <div className="mb-12">
+                    <Button
+                        variant="ghost"
+                        onClick={() => navigate("/admin/products")}
+                        className="mb-6 pl-0 hover:bg-transparent hover:text-muted-foreground uppercase font-bold text-xs tracking-widest"
+                    >
+                        <ArrowLeft className="w-4 h-4 mr-2" /> Back to Inventory
+                    </Button>
+                    <h1 className="text-5xl font-heading font-bold uppercase tracking-tighter mb-2">Add Product</h1>
+                    <p className="text-muted-foreground uppercase tracking-widest text-sm font-bold">Create a new item for your store</p>
                 </div>
 
                 {error && (
-                    <div className="bg-red-50 text-red-600 p-4 rounded-lg mb-6">
+                    <div className="bg-destructive/10 border-2 border-destructive text-destructive p-4 mb-8 font-bold uppercase text-sm">
                         {error}
                     </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border p-6 space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <form onSubmit={handleSubmit} className="border-2 border-border bg-background p-8 md:p-12 space-y-8">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                         {/* SKU */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                SKU <span className="text-red-500">*</span>
-                            </label>
-                            <input
+                        <div className="space-y-2">
+                            <Label className="uppercase font-bold text-xs tracking-widest">
+                                SKU <span className="text-destructive">*</span>
+                            </Label>
+                            <Input
                                 type="text"
                                 name="sku"
                                 value={formData.sku}
                                 onChange={handleChange}
-                                placeholder="e.g., TEE-BLK-001"
-                                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                placeholder="TEE-BLK-001"
+                                className="rounded-none border-2 border-border h-12 px-4 font-bold uppercase focus-visible:ring-0 focus-visible:border-foreground"
                                 required
                             />
-                            <p className="text-xs text-gray-500 mt-1">Unique identifier for the product</p>
+                            <p className="text-xs text-muted-foreground font-mono uppercase">Unique identifier</p>
                         </div>
 
                         {/* Name */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Product Name <span className="text-red-500">*</span>
-                            </label>
-                            <input
+                        <div className="space-y-2">
+                            <Label className="uppercase font-bold text-xs tracking-widest">
+                                Product Name <span className="text-destructive">*</span>
+                            </Label>
+                            <Input
                                 type="text"
                                 name="name"
                                 value={formData.name}
                                 onChange={handleChange}
-                                placeholder="e.g., Classic Black Tee"
-                                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                placeholder="CLASSIC BLACK TEE"
+                                className="rounded-none border-2 border-border h-12 px-4 font-bold uppercase focus-visible:ring-0 focus-visible:border-foreground"
                                 required
                             />
                         </div>
 
                         {/* Category */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Category <span className="text-red-500">*</span>
-                            </label>
+                        <div className="space-y-2">
+                            <Label className="uppercase font-bold text-xs tracking-widest">
+                                Category <span className="text-destructive">*</span>
+                            </Label>
                             <select
                                 name="category"
                                 value={formData.category}
                                 onChange={handleChange}
-                                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="w-full h-12 px-4 border-2 border-border bg-background rounded-none font-bold uppercase focus:outline-none focus:border-foreground appearance-none"
                                 required
                             >
-                                <option value="">Select a category</option>
-                                <option value="Apparel">Apparel</option>
-                                <option value="Footwear">Footwear</option>
-                                <option value="Eyewear">Eyewear</option>
-                                <option value="Accessories">Accessories</option>
-                                <option value="Audio">Audio</option>
-                                <option value="Activewear">Activewear</option>
+                                <option value="">SELECT CATEGORY</option>
+                                <option value="Apparel">APPAREL</option>
+                                <option value="Footwear">FOOTWEAR</option>
+                                <option value="Eyewear">EYEWEAR</option>
+                                <option value="Accessories">ACCESSORIES</option>
+                                <option value="Audio">AUDIO</option>
+                                <option value="Activewear">ACTIVEWEAR</option>
                             </select>
                         </div>
 
                         {/* Price */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Price ($) <span className="text-red-500">*</span>
-                            </label>
-                            <input
+                        <div className="space-y-2">
+                            <Label className="uppercase font-bold text-xs tracking-widest">
+                                Price ($) <span className="text-destructive">*</span>
+                            </Label>
+                            <Input
                                 type="number"
                                 name="price"
                                 value={formData.price}
                                 onChange={handleChange}
-                                placeholder="e.g., 25.99"
+                                placeholder="25.99"
                                 step="0.01"
                                 min="0"
-                                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="rounded-none border-2 border-border h-12 px-4 font-bold uppercase focus-visible:ring-0 focus-visible:border-foreground"
                                 required
                             />
                         </div>
 
                         {/* Sizes */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <div className="space-y-2">
+                            <Label className="uppercase font-bold text-xs tracking-widest">
                                 Available Sizes
-                            </label>
-                            <input
+                            </Label>
+                            <Input
                                 type="text"
                                 name="sizes"
                                 value={formData.sizes}
                                 onChange={handleChange}
-                                placeholder="e.g., S, M, L, XL"
-                                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                placeholder="S, M, L, XL"
+                                className="rounded-none border-2 border-border h-12 px-4 font-bold uppercase focus-visible:ring-0 focus-visible:border-foreground"
                             />
-                            <p className="text-xs text-gray-500 mt-1">Comma-separated list</p>
+                            <p className="text-xs text-muted-foreground font-mono uppercase">Comma-separated list</p>
                         </div>
 
                         {/* Colors */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
+                        <div className="space-y-2">
+                            <Label className="uppercase font-bold text-xs tracking-widest">
                                 Available Colors
-                            </label>
-                            <input
+                            </Label>
+                            <Input
                                 type="text"
                                 name="colors"
                                 value={formData.colors}
                                 onChange={handleChange}
-                                placeholder="e.g., Black, White, Gray"
-                                className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                placeholder="BLACK, WHITE, GRAY"
+                                className="rounded-none border-2 border-border h-12 px-4 font-bold uppercase focus-visible:ring-0 focus-visible:border-foreground"
                             />
-                            <p className="text-xs text-gray-500 mt-1">Comma-separated list</p>
+                            <p className="text-xs text-muted-foreground font-mono uppercase">Comma-separated list</p>
                         </div>
                     </div>
 
                     {/* Image URL */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
+                    <div className="space-y-2">
+                        <Label className="uppercase font-bold text-xs tracking-widest">
                             Image URL
-                        </label>
-                        <input
+                        </Label>
+                        <Input
                             type="url"
                             name="image"
                             value={formData.image}
                             onChange={handleChange}
-                            placeholder="https://images.unsplash.com/..."
-                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            placeholder="HTTPS://IMAGES.UNSPLASH.COM/..."
+                            className="rounded-none border-2 border-border h-12 px-4 font-bold uppercase focus-visible:ring-0 focus-visible:border-foreground"
                         />
-                        <p className="text-xs text-gray-500 mt-1">Leave empty for default placeholder image</p>
+                        <p className="text-xs text-muted-foreground font-mono uppercase">Leave empty for default placeholder</p>
                     </div>
 
                     {/* Description */}
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-2">
-                            Description <span className="text-red-500">*</span>
-                        </label>
+                    <div className="space-y-2">
+                        <Label className="uppercase font-bold text-xs tracking-widest">
+                            Description <span className="text-destructive">*</span>
+                        </Label>
                         <textarea
                             name="description"
                             value={formData.description}
                             onChange={handleChange}
-                            placeholder="Enter product description..."
+                            placeholder="ENTER PRODUCT DESCRIPTION..."
                             rows="4"
-                            className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+                            className="w-full px-4 py-3 border-2 border-border bg-background rounded-none font-medium focus:outline-none focus:border-foreground resize-none uppercase placeholder:normal-case"
                             required
                         />
                     </div>
 
                     {/* In Stock */}
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-3 border-2 border-border p-4 bg-secondary/5">
                         <input
                             type="checkbox"
                             name="inStock"
                             checked={formData.inStock}
                             onChange={handleChange}
-                            className="w-4 h-4 text-blue-600 rounded focus:ring-2 focus:ring-blue-500"
+                            className="w-5 h-5 accent-foreground rounded-none cursor-pointer"
                         />
-                        <label className="text-sm font-medium text-gray-700">
+                        <label className="uppercase font-bold text-xs tracking-widest cursor-pointer">
                             Product is in stock
                         </label>
                     </div>
 
                     {/* Buttons */}
-                    <div className="flex gap-4 pt-4 border-t">
-                        <button
+                    <div className="flex gap-4 pt-6 border-t-2 border-border">
+                        <Button
+                            type="button"
+                            variant="outline"
+                            onClick={() => navigate("/admin/products")}
+                            className="flex-1 h-14 uppercase font-bold border-2"
+                        >
+                            Cancel
+                        </Button>
+                        <Button
                             type="submit"
                             disabled={loading}
-                            className="flex items-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            variant="brutalist"
+                            className="flex-1 h-14"
                         >
                             {loading ? (
                                 <>
-                                    <Loader2 className="w-4 h-4 animate-spin" />
-                                    Adding Product...
+                                    <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                                    ADDING...
                                 </>
                             ) : (
                                 <>
-                                    <Plus className="w-4 h-4" />
-                                    Add Product
+                                    <Plus className="w-5 h-5 mr-2" />
+                                    ADD PRODUCT
                                 </>
                             )}
-                        </button>
-                        <button
-                            type="button"
-                            onClick={() => navigate("/admin/products")}
-                            className="px-6 py-2.5 border border-gray-300 text-gray-700 rounded-lg font-medium hover:bg-gray-50 transition-colors"
-                        >
-                            Cancel
-                        </button>
+                        </Button>
                     </div>
                 </form>
             </div>

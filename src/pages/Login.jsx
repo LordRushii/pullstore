@@ -1,7 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { Loader2 } from "lucide-react";
+import { Loader2, AlertCircle } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 const Login = () => {
     const [email, setEmail] = useState("user@example.com");
@@ -32,7 +35,6 @@ const Login = () => {
         setLoading(true);
 
         try {
-            // Properly await the async login function
             const result = await login(email, password);
             if (result.success) {
                 if (result.user?.role === "admin") {
@@ -51,62 +53,68 @@ const Login = () => {
     };
 
     return (
-        <div className="min-h-[80vh] flex items-center justify-center px-4">
-            <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
-                <div className="text-center mb-8">
-                    <h1 className="text-3xl font-bold tracking-tight mb-2">Welcome Back</h1>
-                    <p className="text-gray-500">Sign in to your account to continue</p>
+        <div className="min-h-screen flex items-center justify-center px-4 bg-background">
+            <div className="w-full max-w-md border-2 border-border bg-background p-8 md:p-12 relative overflow-hidden">
+                <div className="absolute top-0 left-0 w-full h-1 bg-foreground" />
+
+                <div className="text-center mb-12">
+                    <h1 className="text-4xl font-heading font-bold uppercase tracking-tighter mb-2">Access</h1>
+                    <p className="text-muted-foreground uppercase tracking-widest text-xs font-bold">Restricted Area</p>
                 </div>
 
                 {error && (
-                    <div className="bg-red-50 text-red-600 p-3 rounded-lg mb-6 text-sm text-center">
+                    <div className="bg-destructive/10 border-2 border-destructive text-destructive p-4 mb-8 flex items-center gap-3 font-bold uppercase text-sm">
+                        <AlertCircle className="w-5 h-5" />
                         {error}
                     </div>
                 )}
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                        <input
+                <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="space-y-2">
+                        <Label className="uppercase font-bold text-xs tracking-widest">Email</Label>
+                        <Input
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                            className="rounded-none border-2 border-border h-12 px-4 font-bold uppercase focus-visible:ring-0 focus-visible:border-foreground transition-colors"
                             required
+                            placeholder="EMAIL@ADDRESS.COM"
                         />
                     </div>
-                    <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                        <input
+                    <div className="space-y-2">
+                        <Label className="uppercase font-bold text-xs tracking-widest">Password</Label>
+                        <Input
                             type="password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            className="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-primary/50 transition-all"
+                            className="rounded-none border-2 border-border h-12 px-4 font-bold uppercase focus-visible:ring-0 focus-visible:border-foreground transition-colors"
                             required
+                            placeholder="••••••••"
                         />
                     </div>
 
-                    <button
+                    <Button
                         type="submit"
                         disabled={loading}
-                        className="w-full bg-black text-white py-2.5 rounded-lg font-medium hover:bg-gray-800 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+                        className="w-full h-14 text-lg mt-4"
+                        variant="brutalist"
                     >
                         {loading ? (
                             <>
-                                <Loader2 className="w-4 h-4 animate-spin" />
-                                Signing in...
+                                <Loader2 className="w-5 h-5 animate-spin mr-2" />
+                                AUTHENTICATING...
                             </>
                         ) : (
-                            "Sign In"
+                            "ENTER SYSTEM"
                         )}
-                    </button>
+                    </Button>
                 </form>
 
-                <div className="mt-6 text-center text-sm text-gray-500">
-                    <p>Demo Credentials:</p>
-                    <div className="mt-2 space-y-1">
-                        <p>User: user@example.com / password</p>
-                        <p>Admin: admin@example.com / password</p>
+                <div className="mt-12 pt-8 border-t-2 border-border text-center">
+                    <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4">Demo Credentials</p>
+                    <div className="space-y-2 text-sm font-mono">
+                        <p>USER: user@example.com / password</p>
+                        <p>ADMIN: admin@example.com / password</p>
                     </div>
                 </div>
             </div>
