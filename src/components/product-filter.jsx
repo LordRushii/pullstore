@@ -1,5 +1,5 @@
 import { XCircleIcon } from "lucide-react";
-import { useCallback, useMemo, useState, useEffect, useRef } from "react";
+import { useCallback, useMemo, useState, useEffect } from "react";
 import { FlipReveal, FlipRevealItem } from "@/components/gsap/flip-reveal";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -15,8 +15,6 @@ import {
 import { dataLayer } from "@/lib/dataLayer";
 import ProductCard from "./product-card";
 import { Button } from "./ui/button";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
 
 const ProductFilter = () => {
   const [products, setProducts] = useState([]);
@@ -26,10 +24,6 @@ const ProductFilter = () => {
     category: "",
   });
 
-  const containerRef = useRef(null);
-  const headerRef = useRef(null);
-  const filtersRef = useRef(null);
-
   useEffect(() => {
     const loadProducts = async () => {
       const data = await dataLayer.getProducts();
@@ -38,30 +32,6 @@ const ProductFilter = () => {
     };
     loadProducts();
   }, []);
-
-  useGSAP(() => {
-    const tl = gsap.timeline();
-
-    if (headerRef.current) {
-      tl.from(headerRef.current.children, {
-        y: 50,
-        opacity: 0,
-        duration: 0.8,
-        stagger: 0.1,
-        ease: "power3.out"
-      });
-    }
-
-    if (filtersRef.current) {
-      tl.from(filtersRef.current.children, {
-        y: 30,
-        opacity: 0,
-        duration: 0.6,
-        stagger: 0.1,
-        ease: "power3.out"
-      }, "-=0.4");
-    }
-  }, { scope: containerRef });
 
   const categories = useMemo(() => [...new Set(products.map((item) => item.category))], [products]);
 
@@ -84,9 +54,9 @@ const ProductFilter = () => {
   }, [filter.category, filter.search, isEligible, products, loading]);
 
   return (
-    <div className="bg-background min-h-screen py-12" ref={containerRef}>
+    <div className="bg-background min-h-screen py-12">
       <div className="flex flex-col md:flex-row justify-between items-end gap-8 mb-12 border-b-2 border-border pb-8">
-        <div ref={headerRef}>
+        <div>
           <h2 className="text-4xl md:text-6xl font-heading font-bold uppercase tracking-tighter mb-2">
             Catalog
           </h2>
@@ -95,7 +65,7 @@ const ProductFilter = () => {
           </p>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto items-end" role="search" aria-label="Product filters" ref={filtersRef}>
+        <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto items-end" role="search" aria-label="Product filters">
           <div className="w-full sm:w-64">
             <Label htmlFor="product-search" className="uppercase font-bold text-xs tracking-widest mb-2 block">Search</Label>
             <Input

@@ -27,22 +27,13 @@ const Checkout = () => {
 
     useEffect(() => {
         const ctx = gsap.context(() => {
-            const tl = gsap.timeline();
-            
-            tl.from(".checkout-fade-in", {
-                y: 30,
-                opacity: 0,
-                duration: 0.8,
-                stagger: 0.1,
-                ease: "power3.out"
-            })
-            .from("#checkout-form input", {
+            gsap.from(".checkout-fade-in", {
                 y: 20,
                 opacity: 0,
-                duration: 0.5,
-                stagger: 0.05,
+                duration: 0.6,
+                stagger: 0.1,
                 ease: "power2.out"
-            }, "-=0.4");
+            });
         }, containerRef);
 
         return () => ctx.revert();

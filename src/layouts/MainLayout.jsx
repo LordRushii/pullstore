@@ -1,58 +1,23 @@
 import { Outlet, Link, useNavigate } from "react-router-dom";
-import { ShoppingCart, LogOut, User, Menu, X } from "lucide-react";
+import { ShoppingCart, LogOut, User, Menu } from "lucide-react";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
 
 const MainLayout = () => {
     const { user, logout } = useAuth();
     const { cartCount } = useCart();
     const navigate = useNavigate();
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-    const containerRef = useRef(null);
-    const mobileMenuRef = useRef(null);
 
     const handleLogout = () => {
         logout();
         navigate("/");
     };
 
-    useGSAP(() => {
-        // Navbar Link Hover Effect
-        const links = gsap.utils.toArray(".nav-link");
-        links.forEach((link) => {
-            const hoverTl = gsap.timeline({ paused: true });
-            hoverTl.to(link, {
-                scale: 1.1,
-                color: "#ff2e2e", // Accent color
-                duration: 0.2,
-                ease: "power2.out"
-            });
-
-            link.addEventListener("mouseenter", () => hoverTl.play());
-            link.addEventListener("mouseleave", () => hoverTl.reverse());
-        });
-
-    }, { scope: containerRef });
-
-    useGSAP(() => {
-        if (isMobileMenuOpen) {
-            gsap.fromTo(mobileMenuRef.current,
-                { height: 0, opacity: 0 },
-                { height: "auto", opacity: 1, duration: 0.4, ease: "power3.out" }
-            );
-            gsap.fromTo(".mobile-nav-link",
-                { x: -20, opacity: 0 },
-                { x: 0, opacity: 1, duration: 0.4, stagger: 0.1, delay: 0.1 }
-            );
-        }
-    }, { dependencies: [isMobileMenuOpen], scope: containerRef });
-
     return (
-        <div className="min-h-screen flex flex-col bg-background text-foreground selection:bg-accent selection:text-accent-foreground" ref={containerRef}>
+        <div className="min-h-screen flex flex-col bg-background text-foreground selection:bg-accent selection:text-accent-foreground">
             {/* Brutalist Header */}
             <header className="sticky top-0 z-50 w-full border-b-2 border-border bg-background/95 backdrop-blur-sm">
                 <div className="container-wide h-20 flex items-center justify-between">
@@ -63,10 +28,10 @@ const MainLayout = () => {
 
                     {/* Desktop Nav */}
                     <nav className="hidden md:flex items-center gap-8 text-sm font-bold uppercase tracking-widest">
-                        <Link to="/" className="nav-link transition-all">
+                        <Link to="/" className="hover:text-accent hover:underline decoration-2 underline-offset-4 transition-all">
                             Home
                         </Link>
-                        <Link to="/shop" className="nav-link transition-all">
+                        <Link to="/shop" className="hover:text-accent hover:underline decoration-2 underline-offset-4 transition-all">
                             Shop
                         </Link>
                     </nav>
@@ -127,26 +92,24 @@ const MainLayout = () => {
                             className="md:hidden p-2"
                             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
                         >
-                            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                            <Menu className="w-6 h-6" />
                         </button>
                     </div>
                 </div>
 
                 {/* Mobile Menu */}
                 {isMobileMenuOpen && (
-                    <div className="md:hidden border-t-2 border-border bg-background overflow-hidden" ref={mobileMenuRef}>
-                        <div className="p-4 flex flex-col gap-4">
-                            <Link to="/" className="mobile-nav-link text-lg font-bold uppercase" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
-                            <Link to="/shop" className="mobile-nav-link text-lg font-bold uppercase" onClick={() => setIsMobileMenuOpen(false)}>Shop</Link>
-                            {user ? (
-                                <>
-                                    <Link to="/profile" className="mobile-nav-link text-lg font-bold uppercase" onClick={() => setIsMobileMenuOpen(false)}>Profile</Link>
-                                    <button onClick={handleLogout} className="mobile-nav-link text-lg font-bold uppercase text-left text-destructive">Logout</button>
-                                </>
-                            ) : (
-                                <Link to="/login" className="mobile-nav-link text-lg font-bold uppercase" onClick={() => setIsMobileMenuOpen(false)}>Login</Link>
-                            )}
-                        </div>
+                    <div className="md:hidden border-t-2 border-border bg-background p-4 flex flex-col gap-4">
+                        <Link to="/" className="text-lg font-bold uppercase" onClick={() => setIsMobileMenuOpen(false)}>Home</Link>
+                        <Link to="/shop" className="text-lg font-bold uppercase" onClick={() => setIsMobileMenuOpen(false)}>Shop</Link>
+                        {user ? (
+                            <>
+                                <Link to="/profile" className="text-lg font-bold uppercase" onClick={() => setIsMobileMenuOpen(false)}>Profile</Link>
+                                <button onClick={handleLogout} className="text-lg font-bold uppercase text-left text-destructive">Logout</button>
+                            </>
+                        ) : (
+                            <Link to="/login" className="text-lg font-bold uppercase" onClick={() => setIsMobileMenuOpen(false)}>Login</Link>
+                        )}
                     </div>
                 )}
             </header>

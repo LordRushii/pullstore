@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import { dataLayer } from "../../lib/dataLayer";
 import { Plus, Pencil, Trash2, Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -12,8 +12,6 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
-import gsap from "gsap";
-import { useGSAP } from "@gsap/react";
 
 const AdminProducts = () => {
     const [products, setProducts] = useState([]);
@@ -30,23 +28,9 @@ const AdminProducts = () => {
         inStock: true,
     });
 
-    const containerRef = useRef(null);
-
     useEffect(() => {
         loadProducts();
     }, []);
-
-    useGSAP(() => {
-        if (products.length > 0) {
-            gsap.from(".product-row", {
-                y: 20,
-                opacity: 0,
-                duration: 0.5,
-                stagger: 0.05,
-                ease: "power2.out"
-            });
-        }
-    }, { scope: containerRef, dependencies: [products] });
 
     const loadProducts = async () => {
         const data = await dataLayer.getProducts();
@@ -122,7 +106,7 @@ const AdminProducts = () => {
     };
 
     return (
-        <div className="p-6 md:p-12 min-h-screen bg-background" ref={containerRef}>
+        <div className="p-6 md:p-12 min-h-screen bg-background">
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
                 <h1 className="text-5xl font-heading font-bold uppercase tracking-tighter">Products</h1>
                 <Button onClick={handleAdd} className="flex items-center gap-2 h-12 px-6" variant="brutalist">
@@ -156,7 +140,7 @@ const AdminProducts = () => {
                     </TableHeader>
                     <TableBody>
                         {filteredProducts.map((product) => (
-                            <TableRow key={product.sku} className="border-b border-border hover:bg-secondary/5 group product-row">
+                            <TableRow key={product.sku} className="border-b border-border hover:bg-secondary/5 group">
                                 <TableCell>
                                     <div className="w-12 h-12 border border-border overflow-hidden bg-secondary/20">
                                         <img
