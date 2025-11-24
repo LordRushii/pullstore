@@ -15,8 +15,8 @@ const AdminLayout = () => {
         <div className="min-h-screen flex bg-gray-100">
             <aside className="w-64 bg-white border-r hidden md:flex flex-col">
                 <div className="h-16 flex items-center px-6 border-b">
-                    <Link to="/" className="text-xl font-bold">
-                        Admin<span className="text-blue-600">Panel</span>
+                    <Link to="/" className="text-xl font-bold uppercase tracking-widest">
+                        Admin<span className="text-red-600">Panel</span>
                     </Link>
                 </div>
 

@@ -1,5 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
-import { ShoppingCart, ArrowLeft, Check, Heart } from "lucide-react";
+import { ShoppingCart, ArrowLeft, Check, Heart, ChevronLeft, ChevronRight } from "lucide-react";
+import useEmblaCarousel from "embla-carousel-react";
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
@@ -22,6 +23,16 @@ const ProductDetail = () => {
 
     const containerRef = useRef(null);
     const detailsRef = useRef(null);
+
+    const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+
+    const scrollPrev = () => {
+        if (emblaApi) emblaApi.scrollPrev();
+    };
+
+    const scrollNext = () => {
+        if (emblaApi) emblaApi.scrollNext();
+    };
 
     useEffect(() => {
         const loadProduct = async () => {
@@ -84,7 +95,7 @@ const ProductDetail = () => {
                 <div className="order-2 lg:order-1 p-8 lg:p-16 lg:sticky lg:top-20 lg:h-[calc(100vh-5rem)] flex flex-col justify-center border-r-2 border-border overflow-y-auto" ref={detailsRef}>
                     <button
                         onClick={() => navigate(-1)}
-                        className="flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8 transition-colors uppercase font-bold text-xs tracking-widest w-fit"
+                        className="hidden lg:flex items-center gap-2 text-muted-foreground hover:text-foreground mb-8 transition-colors uppercase font-bold text-xs tracking-widest w-fit"
                         aria-label="Go back"
                     >
                         <ArrowLeft className="w-4 h-4" /> Back
@@ -187,26 +198,55 @@ const ProductDetail = () => {
                     </div>
                 </div>
 
-                {/* Right: Image Gallery */}
-                <div className="order-1 lg:order-2 bg-secondary/20">
-                    <div className="grid grid-cols-1 gap-2">
-                        <div className="aspect-[3/4] w-full relative group overflow-hidden border-b-2 border-border">
-                            <img
-                                src={product.image}
-                                alt={product.name}
-                                loading="lazy"
-                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                            />
+                {/* Right: Image Gallery (Carousel) */}
+                <div className="order-1 lg:order-2 bg-secondary/20 relative group">
+                    {/* Mobile Back Button */}
+                    <button
+                        onClick={() => navigate(-1)}
+                        className="absolute top-4 left-4 z-10 lg:hidden flex items-center gap-2 bg-background/80 backdrop-blur-sm px-3 py-2 rounded-full text-xs font-bold uppercase tracking-widest shadow-sm"
+                        aria-label="Go back"
+                    >
+                        <ArrowLeft className="w-4 h-4" /> Back
+                    </button>
+
+                    <div className="overflow-hidden aspect-[3/4] lg:aspect-auto lg:h-full touch-pan-y" ref={emblaRef}>
+                        <div className="flex h-full">
+                            {[product.image, product.image, product.image].map((img, index) => (
+                                <div key={index} className="flex-[0_0_100%] min-w-0 relative h-full">
+                                    <div className="absolute inset-0">
+                                        <img
+                                            src={img}
+                                            alt={`${product.name} view ${index + 1}`}
+                                            className="w-full h-full object-cover select-none"
+                                            draggable={false}
+                                            onMouseDown={(e) => e.preventDefault()}
+                                        />
+                                    </div>
+                                </div>
+                            ))}
                         </div>
-                        {[1, 2].map((i) => (
-                            <div key={i} className="aspect-[3/4] w-full relative group overflow-hidden border-b-2 border-border last:border-b-0">
-                                <img
-                                    src={product.image}
-                                    alt={`${product.name} view ${i}`}
-                                    loading="lazy"
-                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105 grayscale hover:grayscale-0"
-                                />
-                            </div>
+                    </div>
+
+                    {/* Carousel Navigation */}
+                    <button
+                        onClick={scrollPrev}
+                        className="absolute left-4 top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background text-foreground p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-0 hidden lg:block"
+                        aria-label="Previous image"
+                    >
+                        <ChevronLeft className="w-6 h-6" />
+                    </button>
+                    <button
+                        onClick={scrollNext}
+                        className="absolute right-4 top-1/2 -translate-y-1/2 bg-background/80 hover:bg-background text-foreground p-2 rounded-full opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-0 hidden lg:block"
+                        aria-label="Next image"
+                    >
+                        <ChevronRight className="w-6 h-6" />
+                    </button>
+
+                    {/* Mobile Navigation Dots (Optional but good for UX) */}
+                    <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 lg:hidden">
+                        {[0, 1, 2].map((i) => (
+                            <div key={i} className="w-2 h-2 rounded-full bg-background/50" />
                         ))}
                     </div>
                 </div>

@@ -87,7 +87,7 @@ const Home = () => {
                     </div>
                     <h1 className="text-6xl md:text-9xl font-heading font-bold tracking-tighter mb-8 leading-[0.9]">
                         REDEFINE <br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-primary to-primary/50">YOUR REALITY</span>
+                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-accent to-accent/50">YOUR REALITY</span>
                     </h1>
                     <p className="text-xl md:text-2xl mb-10 text-muted-foreground max-w-2xl mx-auto font-light">
                         Premium apparel for the modern avant-garde.

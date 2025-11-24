@@ -148,7 +148,7 @@ const MainLayout = () => {
                 </div>
                 <div className="container-wide mt-12 pt-8 border-t border-border/20 flex flex-col md:flex-row justify-between items-center gap-4 text-xs uppercase tracking-widest text-muted-foreground">
                     <p>&copy; {new Date().getFullYear()} PullStore. All rights reserved.</p>
-                    <p>Designed by Antigravity</p>
+
                 </div>
             </footer>
         </div>
