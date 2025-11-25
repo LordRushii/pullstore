@@ -20,7 +20,7 @@ const MainLayout = () => {
         <div className="min-h-screen flex flex-col bg-background text-foreground selection:bg-accent selection:text-accent-foreground">
             {/* Brutalist Header */}
             <header className="sticky top-0 z-50 w-full border-b-2 border-border bg-background/95 backdrop-blur-sm">
-                <div className="container-wide h-20 flex items-center justify-between">
+                <div className="container-wide h-14 flex items-center justify-between">
                     {/* Logo */}
                     <Link to="/" className="text-3xl font-heading font-bold uppercase tracking-tighter hover:text-accent transition-colors">
                         Pull<span className="text-accent">Store</span>

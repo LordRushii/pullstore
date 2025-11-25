@@ -105,7 +105,7 @@ const Login = () => {
                                 AUTHENTICATING...
                             </>
                         ) : (
-                            "ENTER SYSTEM"
+                            "LOGIN"
                         )}
                     </Button>
                 </form>

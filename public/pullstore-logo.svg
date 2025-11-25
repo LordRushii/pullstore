@@ -1,21 +1,25 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200">
-  <defs>
-    <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#8B5CF6;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#3B82F6;stop-opacity:1" />
-    </linearGradient>
-  </defs>
-  
-  <!-- Background circle -->
-  <circle cx="100" cy="100" r="95" fill="url(#grad)"/>
-  
-  <!-- Pull icon - arrow pointing right -->
-  <path d="M 60 100 L 90 70 L 90 85 L 140 85 L 140 115 L 90 115 L 90 130 Z" 
-        fill="white" stroke="white" stroke-width="2"/>
-  
-  <!-- Store building icon element -->
-  <rect x="65" y="120" width="70" height="50" fill="white" opacity="0.3"/>
-  <rect x="70" y="125" width="15" height="20" fill="white"/>
-  <rect x="95" y="125" width="15" height="20" fill="white"/>
-  <rect x="120" y="125" width="15" height="20" fill="white"/>
+<svg width="512" height="512" viewBox="0 0 512 512" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- BACKGROUND: Solid Black Circle -->
+  <circle cx="256" cy="256" r="256" fill="black"/>
+
+  <!-- THE CART ICON: Centered and Optimized for small sizes -->
+  <g transform="translate(100, 110)">
+    
+    <!-- Cart Body: Crimson Red -->
+    <!-- Made slightly bulkier to stand out at 16x16px size -->
+    <path d="M40 20C40 8.9543 48.9543 0 60 0H250C272.091 0 290 17.9086 290 40V170C290 192.091 272.091 210 250 210H80C57.9086 210 40 192.091 40 170V20Z" fill="#D70015"/>
+
+    <!-- The Handle: Thickened for visibility -->
+    <path d="M0 40H40V80H20C8.9543 80 0 71.0457 0 60V40Z" fill="#D70015"/>
+
+    <!-- The Wheels: Bright Red -->
+    <circle cx="100" cy="250" r="35" fill="#D70015"/>
+    <circle cx="230" cy="250" r="35" fill="#D70015"/>
+
+    <!-- THE SPEED LINES: The 'Pull' Effect -->
+    <!-- I made these cuts thicker so they don't disappear when the icon is tiny -->
+    <rect x="30" y="45" width="140" height="25" rx="12" fill="black"/>
+    <rect x="30" y="95" width="100" height="25" rx="12" fill="black"/>
+    <rect x="30" y="145" width="180" height="25" rx="12" fill="black"/>
+  </g>
 </svg>
