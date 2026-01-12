@@ -1,18 +1,21 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { Loader2, AlertCircle } from "lucide-react";
+import { Loader2, AlertCircle, UserPlus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 const Login = () => {
-    const [email, setEmail] = useState("user@example.com");
-    const [password, setPassword] = useState("password");
+    const [isRegisterMode, setIsRegisterMode] = useState(false);
+    const [name, setName] = useState("");
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [confirmPassword, setConfirmPassword] = useState("");
     const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const { login, isAuthenticated, user } = useAuth();
+    const { login, register, isAuthenticated, user } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
 
@@ -35,21 +38,59 @@ const Login = () => {
         setLoading(true);
 
         try {
-            const result = await login(email, password);
-            if (result.success) {
-                if (result.user?.role === "admin") {
-                    navigate("/admin", { replace: true });
+            if (isRegisterMode) {
+                // Registration mode
+                if (password !== confirmPassword) {
+                    setError("Passwords do not match");
+                    setLoading(false);
+                    return;
+                }
+
+                if (password.length < 6) {
+                    setError("Password must be at least 6 characters");
+                    setLoading(false);
+                    return;
+                }
+
+                const result = await register(name, email, password);
+                if (result.success) {
+                    // Redirect based on role
+                    if (result.user?.role === "admin") {
+                        navigate("/admin", { replace: true });
+                    } else {
+                        navigate(from, { replace: true });
+                    }
                 } else {
-                    navigate(from, { replace: true });
+                    setError(result.message);
+                    setLoading(false);
                 }
             } else {
-                setError(result.message);
-                setLoading(false);
+                // Login mode
+                const result = await login(email, password);
+                if (result.success) {
+                    if (result.user?.role === "admin") {
+                        navigate("/admin", { replace: true });
+                    } else {
+                        navigate(from, { replace: true });
+                    }
+                } else {
+                    setError(result.message);
+                    setLoading(false);
+                }
             }
         } catch (err) {
-            setError("An error occurred during login");
+            setError(`An error occurred during ${isRegisterMode ? "registration" : "login"}`);
             setLoading(false);
         }
+    };
+
+    const toggleMode = () => {
+        setIsRegisterMode(!isRegisterMode);
+        setError("");
+        setName("");
+        setEmail("");
+        setPassword("");
+        setConfirmPassword("");
     };
 
     return (
@@ -58,8 +99,12 @@ const Login = () => {
                 <div className="absolute top-0 left-0 w-full h-1 bg-foreground" />
 
                 <div className="text-center mb-12">
-                    <h1 className="text-4xl font-heading font-bold uppercase tracking-tighter mb-2">Access</h1>
-                    <p className="text-muted-foreground uppercase tracking-widest text-xs font-bold">Restricted Area</p>
+                    <h1 className="text-4xl font-heading font-bold uppercase tracking-tighter mb-2">
+                        {isRegisterMode ? "Register" : "Access"}
+                    </h1>
+                    <p className="text-muted-foreground uppercase tracking-widest text-xs font-bold">
+                        {isRegisterMode ? "Create your account" : "Restricted Area"}
+                    </p>
                 </div>
 
                 {error && (
@@ -70,6 +115,20 @@ const Login = () => {
                 )}
 
                 <form onSubmit={handleSubmit} className="space-y-6">
+                    {isRegisterMode && (
+                        <div className="space-y-2">
+                            <Label className="uppercase font-bold text-xs tracking-widest">Full Name</Label>
+                            <Input
+                                type="text"
+                                value={name}
+                                onChange={(e) => setName(e.target.value)}
+                                className="rounded-none border-2 border-border h-12 px-4 font-bold uppercase focus-visible:ring-0 focus-visible:border-foreground transition-colors"
+                                required
+                                placeholder="JOHN DOE"
+                            />
+                        </div>
+                    )}
+                    
                     <div className="space-y-2">
                         <Label className="uppercase font-bold text-xs tracking-widest">Email</Label>
                         <Input
@@ -81,6 +140,7 @@ const Login = () => {
                             placeholder="EMAIL@ADDRESS.COM"
                         />
                     </div>
+                    
                     <div className="space-y-2">
                         <Label className="uppercase font-bold text-xs tracking-widest">Password</Label>
                         <Input
@@ -90,8 +150,24 @@ const Login = () => {
                             className="rounded-none border-2 border-border h-12 px-4 font-bold uppercase focus-visible:ring-0 focus-visible:border-foreground transition-colors"
                             required
                             placeholder="••••••••"
+                            minLength={6}
                         />
                     </div>
+
+                    {isRegisterMode && (
+                        <div className="space-y-2">
+                            <Label className="uppercase font-bold text-xs tracking-widest">Confirm Password</Label>
+                            <Input
+                                type="password"
+                                value={confirmPassword}
+                                onChange={(e) => setConfirmPassword(e.target.value)}
+                                className="rounded-none border-2 border-border h-12 px-4 font-bold uppercase focus-visible:ring-0 focus-visible:border-foreground transition-colors"
+                                required
+                                placeholder="••••••••"
+                                minLength={6}
+                            />
+                        </div>
+                    )}
 
                     <Button
                         type="submit"
@@ -102,21 +178,46 @@ const Login = () => {
                         {loading ? (
                             <>
                                 <Loader2 className="w-5 h-5 animate-spin mr-2" />
-                                AUTHENTICATING...
+                                {isRegisterMode ? "CREATING ACCOUNT..." : "AUTHENTICATING..."}
                             </>
                         ) : (
-                            "LOGIN"
+                            <>
+                                {isRegisterMode ? (
+                                    <>
+                                        <UserPlus className="w-5 h-5 mr-2" />
+                                        REGISTER
+                                    </>
+                                ) : (
+                                    "LOGIN"
+                                )}
+                            </>
                         )}
                     </Button>
                 </form>
 
-                <div className="mt-12 pt-8 border-t-2 border-border text-center">
-                    <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4">Demo Credentials</p>
-                    <div className="space-y-2 text-sm font-mono">
-                        <p>USER: user@example.com / password</p>
-                        <p>ADMIN: admin@example.com / password</p>
-                    </div>
+                <div className="mt-8 text-center">
+                    <Button
+                        type="button"
+                        variant="ghost"
+                        onClick={toggleMode}
+                        className="uppercase font-bold text-xs tracking-widest hover:bg-accent"
+                    >
+                        {isRegisterMode 
+                            ? "Already have an account? Login" 
+                            : "Don't have an account? Register"}
+                    </Button>
                 </div>
+
+                {!isRegisterMode && (
+                    <div className="mt-8 pt-8 border-t-2 border-border text-center">
+                        <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-4">
+                            For Testing (After DB Setup)
+                        </p>
+                        <div className="space-y-2 text-sm font-mono text-muted-foreground">
+                            <p>Create admin user with seed script</p>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
