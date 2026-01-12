@@ -206,7 +206,8 @@ async function handleApiRequest(req, res, handler) {
 // Helper function to get request body
 function getRequestBody(req) {
     return new Promise((resolve, reject) => {
-        if (req.method === "GET" || req.method === "DELETE") {
+        // For GET requests, there is no body by convention
+        if (req.method === "GET") {
             resolve(null);
             return;
         }
@@ -216,7 +217,7 @@ function getRequestBody(req) {
             body += chunk.toString();
         });
         req.on("end", () => {
-            resolve(body);
+            resolve(body || null);
         });
         req.on("error", reject);
     });
