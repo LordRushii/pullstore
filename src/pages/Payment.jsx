@@ -38,9 +38,22 @@ const Payment = () => {
         // Simulate payment processing
         await new Promise(resolve => setTimeout(resolve, 2000));
 
+        // Get shipping address from localStorage or use default
+        const savedAddress = localStorage.getItem("checkout_address");
+        let shippingAddress = {};
+        
+        if (savedAddress) {
+            try {
+                shippingAddress = JSON.parse(savedAddress);
+            } catch (e) {
+                // If parsing fails, use empty object
+                shippingAddress = {};
+            }
+        }
+
         const orderDetails = {
             paymentMethod: "Credit Card",
-            shippingAddress: "123 Main St" // Ideally passed from Checkout page via state
+            shippingAddress: shippingAddress
         };
 
         const result = await checkout(orderDetails);

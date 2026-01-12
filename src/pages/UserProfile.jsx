@@ -1,5 +1,5 @@
 import { useAuth } from "../context/AuthContext";
-import { dataLayer } from "../lib/dataLayer";
+import { dataLayer } from "../lib/apiService";
 import { Package, Truck, CheckCircle, Clock, User } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -10,8 +10,9 @@ const UserProfile = () => {
 
     useEffect(() => {
         const loadOrders = async () => {
-            if (user?.id) {
-                const orders = await dataLayer.getOrders(user.id);
+            if (user?._id || user?.id) {
+                const userId = user._id || user.id;
+                const orders = await dataLayer.getOrders(userId);
                 setUserOrders(orders);
             }
         };
@@ -77,15 +78,17 @@ const UserProfile = () => {
                         <div className="space-y-8">
                             {userOrders.length > 0 ? (
                                 userOrders.map((order) => (
-                                    <div key={order.id} className="border-2 border-border bg-background p-6 transition-all hover:border-foreground group">
+                                    <div key={order.orderId || order._id} className="border-2 border-border bg-background p-6 transition-all hover:border-foreground group">
                                         <div className="flex flex-wrap justify-between items-start gap-4 mb-6 border-b-2 border-border pb-4">
                                             <div>
                                                 <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">Order ID</p>
-                                                <p className="font-mono font-bold text-lg">#{order.id}</p>
+                                                <p className="font-mono font-bold text-lg">#{order.orderId || order._id}</p>
                                             </div>
                                             <div>
                                                 <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">Date</p>
-                                                <p className="font-mono font-bold text-lg">{order.date}</p>
+                                                <p className="font-mono font-bold text-lg">
+                                                    {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : order.date}
+                                                </p>
                                             </div>
                                             <div>
                                                 <p className="text-xs font-bold uppercase tracking-widest text-muted-foreground mb-1">Total</p>

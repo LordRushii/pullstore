@@ -5,6 +5,7 @@ import Dashboard from "../pages/admin/Dashboard";
 import AdminProducts from "../pages/admin/AdminProducts";
 import AdminCategories from "../pages/admin/AdminCategories";
 import AdminOrders from "../pages/admin/AdminOrders";
+import AdminUsers from "../pages/admin/AdminUsers";
 import AddProduct from "../pages/admin/AddProduct";
 
 const adminRoutes = (
@@ -15,6 +16,7 @@ const adminRoutes = (
             <Route path="add-product" element={<AddProduct />} />
             <Route path="categories" element={<AdminCategories />} />
             <Route path="orders" element={<AdminOrders />} />
+            <Route path="users" element={<AdminUsers />} />
         </Route>
     </Route>
 );

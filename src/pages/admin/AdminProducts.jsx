@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { dataLayer } from "../../lib/dataLayer";
+import { dataLayer } from "../../lib/apiService";
 import { Plus, Pencil, Trash2, Search, X } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";

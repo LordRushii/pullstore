@@ -46,7 +46,8 @@ const Checkout = () => {
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        // In a real app, we would save the address here
+        // Save shipping address to localStorage so Payment page can use it
+        localStorage.setItem("checkout_address", JSON.stringify(formData));
         navigate("/payment");
     };
 

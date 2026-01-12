@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from "react";
-import { dataLayer } from "../lib/dataLayer";
+import { dataLayer } from "../lib/apiService";
 import { useAuth } from "./AuthContext";
 
 const CartContext = createContext();
@@ -23,48 +23,119 @@ export const CartProvider = ({ children }) => {
         return newId;
     });
 
-    const getEffectiveUserId = () => user?.id || guestId;
+    const getEffectiveUserId = () => {
+        // Use _id for real users from database, or guestId for guests
+        // Always convert to string for consistency
+        const userId = user?._id || user?.id || guestId;
+        return userId ? userId.toString() : guestId;
+    };
 
     useEffect(() => {
         const loadCart = async () => {
-            const userId = getEffectiveUserId();
-            const items = await dataLayer.getCart(userId);
-            setCartItems(items);
+            try {
+                const userId = getEffectiveUserId();
+                const items = await dataLayer.getCart(userId);
+                // Add unique id to each item for React key (using array index)
+                const itemsWithIds = items.map((item, index) => ({
+                    ...item,
+                    id: `cart-${index}`,
+                    itemIndex: index, // Store the actual index for API calls
+                }));
+                setCartItems(itemsWithIds);
+            } catch (error) {
+                console.error("Error loading cart:", error);
+                setCartItems([]);
+            }
         };
         loadCart();
     }, [user, guestId]);
 
     const addToCart = async (product, selectedSize = null, selectedColor = null) => {
-        const userId = getEffectiveUserId();
-        const updatedCart = await dataLayer.addToCart(userId, product, selectedSize, selectedColor);
-        if (updatedCart) setCartItems(updatedCart);
+        try {
+            const userId = getEffectiveUserId();
+            const updatedCart = await dataLayer.addToCart(userId, product, selectedSize, selectedColor);
+            if (updatedCart) {
+                const itemsWithIds = updatedCart.map((item, index) => ({
+                    ...item,
+                    id: `cart-${index}`,
+                    itemIndex: index,
+                }));
+                setCartItems(itemsWithIds);
+            }
+        } catch (error) {
+            console.error("Error adding to cart:", error);
+        }
     };
 
-    const removeFromCart = async (id) => {
-        const userId = getEffectiveUserId();
-        const updatedCart = await dataLayer.removeFromCart(userId, id);
-        if (updatedCart) setCartItems(updatedCart);
+    const removeFromCart = async (itemId) => {
+        try {
+            const userId = getEffectiveUserId();
+            // Find the actual array index
+            const item = cartItems.find(i => i.id === itemId);
+            if (!item) return;
+
+            const updatedCart = await dataLayer.removeFromCart(userId, item.itemIndex);
+            if (updatedCart !== undefined) {
+                const itemsWithIds = updatedCart.map((item, index) => ({
+                    ...item,
+                    id: `cart-${index}`,
+                    itemIndex: index,
+                }));
+                setCartItems(itemsWithIds);
+            }
+        } catch (error) {
+            console.error("Error removing from cart:", error);
+        }
     };
 
-    const updateQuantity = async (id, quantity) => {
-        const userId = getEffectiveUserId();
-        const updatedCart = await dataLayer.updateCartItemQuantity(userId, id, quantity);
-        if (updatedCart) setCartItems(updatedCart);
+    const updateQuantity = async (itemId, quantity) => {
+        try {
+            const userId = getEffectiveUserId();
+            // Find the actual array index
+            const item = cartItems.find(i => i.id === itemId);
+            if (!item) return;
+
+            const updatedCart = await dataLayer.updateCartItemQuantity(userId, item.itemIndex, quantity);
+            if (updatedCart !== undefined) {
+                const itemsWithIds = updatedCart.map((item, index) => ({
+                    ...item,
+                    id: `cart-${index}`,
+                    itemIndex: index,
+                }));
+                setCartItems(itemsWithIds);
+            }
+        } catch (error) {
+            console.error("Error updating cart quantity:", error);
+        }
     };
 
     const clearCart = async () => {
-        const userId = getEffectiveUserId();
-        const updatedCart = await dataLayer.clearCart(userId);
-        if (updatedCart) setCartItems(updatedCart);
+        try {
+            const userId = getEffectiveUserId();
+            const updatedCart = await dataLayer.clearCart(userId);
+            if (updatedCart !== undefined) {
+                setCartItems([]);
+            }
+        } catch (error) {
+            console.error("Error clearing cart:", error);
+        }
     };
 
     const checkout = async (orderDetails) => {
-        const userId = getEffectiveUserId();
-        const response = await dataLayer.createOrder(userId, orderDetails);
-        if (response.success) {
-            setCartItems([]);
+        try {
+            const userId = getEffectiveUserId();
+            const response = await dataLayer.createOrder(userId, orderDetails);
+            if (response.success) {
+                setCartItems([]);
+            }
+            return response;
+        } catch (error) {
+            console.error("Error during checkout:", error);
+            return {
+                success: false,
+                message: error.message || "Checkout failed",
+            };
         }
-        return response;
     };
 
     const cartCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);

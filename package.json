@@ -10,7 +10,8 @@
     "preview": "vite preview",
     "seed:admin": "node scripts/seed-admin.js",
     "seed:data": "node scripts/seed-data.js",
-    "seed:all": "node scripts/seed-admin.js && node scripts/seed-data.js"
+    "seed:all": "node scripts/seed-admin.js && node scripts/seed-data.js",
+    "cleanup:db": "node scripts/cleanup-db.js"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",

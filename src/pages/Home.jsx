@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { ArrowRight, Star } from "lucide-react";
 import { useState, useEffect, useRef } from "react";
-import { dataLayer } from "../lib/dataLayer";
+import { dataLayer } from "../lib/apiService";
 import ProductCard from "../components/product-card";
 import { Button } from "@/components/ui/button";
 import { useGSAP } from "@gsap/react";

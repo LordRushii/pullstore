@@ -4,7 +4,7 @@ import useEmblaCarousel from "embla-carousel-react";
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useCart } from "../context/CartContext";
-import { dataLayer } from "../lib/dataLayer";
+import { dataLayer } from "../lib/apiService";
 import { Button } from "@/components/ui/button";
 import gsap from "gsap";
 import { useGSAP } from "@gsap/react";

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { dataLayer } from "../../lib/dataLayer";
+import { dataLayer } from "../../lib/apiService";
 import { Eye, Truck, CheckCircle, Clock, XCircle, RefreshCw } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
@@ -31,13 +31,19 @@ const AdminOrders = () => {
     }, []);
 
     const handleStatusChange = async (orderId, newStatus) => {
-        // Optimistic update
-        setOrders(
-            orders.map((order) =>
-                order.id === orderId ? { ...order, status: newStatus } : order
-            )
-        );
-        await dataLayer.updateOrderStatus(orderId, newStatus);
+        try {
+            // Optimistic update
+            setOrders(
+                orders.map((order) =>
+                    order.orderId === orderId ? { ...order, status: newStatus } : order
+                )
+            );
+            await dataLayer.updateOrderStatus(orderId, newStatus);
+        } catch (error) {
+            console.error("Error updating order status:", error);
+            // Reload orders on error
+            loadOrders();
+        }
     };
 
     const getStatusColor = (status) => {
@@ -78,10 +84,14 @@ const AdminOrders = () => {
                     </TableHeader>
                     <TableBody>
                         {orders.map((order) => (
-                            <TableRow key={order.id} className="border-b border-border hover:bg-secondary/5 group">
-                                <TableCell className="font-mono font-bold">{order.id}</TableCell>
-                                <TableCell className="font-mono text-sm text-muted-foreground">{order.date}</TableCell>
-                                <TableCell className="font-bold uppercase">{order.userId}</TableCell>
+                            <TableRow key={order.orderId || order._id} className="border-b border-border hover:bg-secondary/5 group">
+                                <TableCell className="font-mono font-bold">{order.orderId || order._id}</TableCell>
+                                <TableCell className="font-mono text-sm text-muted-foreground">
+                                    {order.createdAt ? new Date(order.createdAt).toLocaleDateString() : order.date}
+                                </TableCell>
+                                <TableCell className="font-bold uppercase">
+                                    {order.shippingAddress?.email || order.userId}
+                                </TableCell>
                                 <TableCell className="font-mono font-bold">${order.total}</TableCell>
                                 <TableCell>
                                     <span
@@ -97,7 +107,7 @@ const AdminOrders = () => {
                                         <Select
                                             defaultValue={order.status}
                                             onValueChange={(value) =>
-                                                handleStatusChange(order.id, value)
+                                                handleStatusChange(order.orderId || order._id, value)
                                             }
                                         >
                                             <SelectTrigger className="w-[140px] h-10 rounded-none border-2 border-border font-bold uppercase focus:ring-0 focus:border-foreground">

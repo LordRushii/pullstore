@@ -2,10 +2,10 @@
  * Admin User Seed Script
  * Run this script once to create the initial admin user
  * 
- * Usage: node scripts/seed-admin.js
+ * Usage: npm run seed:admin
  */
 
-import { MongoClient } from "mongodb";
+import mongoose from "mongoose";
 import * as bcrypt from "bcryptjs";
 import dotenv from "dotenv";
 import { fileURLToPath } from "url";
@@ -27,9 +27,30 @@ const ADMIN_USER = {
     password: "admin123456", // Change this to a secure password
     role: "admin",
     emailVerified: true,
+    isActive: true,
     createdAt: new Date(),
     updatedAt: new Date(),
 };
+
+// User schema (inline for seeding)
+const userSchema = new mongoose.Schema(
+    {
+        name: { type: String, required: true },
+        email: { type: String, required: true, unique: true },
+        password: { type: String, required: true },
+        role: { type: String, enum: ["user", "admin"], default: "user" },
+        emailVerified: { type: Boolean, default: false },
+        phone: String,
+        address: Object,
+        avatar: String,
+        isActive: { type: Boolean, default: true },
+        lastLogin: Date,
+    },
+    { 
+        timestamps: true,
+        collection: "user" // Use singular 'user' collection name
+    }
+);
 
 async function seedAdmin() {
     if (!MONGO_URI) {
@@ -38,69 +59,50 @@ async function seedAdmin() {
         process.exit(1);
     }
 
-    console.log("🔌 Connecting to MongoDB...");
-    const client = new MongoClient(MONGO_URI);
-
     try {
-        await client.connect();
-        console.log("✅ Connected to MongoDB");
+        await mongoose.connect(MONGO_URI, {
+            dbName: DB_NAME,
+        });
 
-        const db = client.db(DB_NAME);
-        const usersCollection = db.collection("user");
+        const User = mongoose.models.User || mongoose.model("User", userSchema);
 
         // Check if admin already exists
-        const existingAdmin = await usersCollection.findOne({ 
-            email: ADMIN_USER.email 
+        const existingAdmin = await User.findOne({
+            email: ADMIN_USER.email,
         });
 
         if (existingAdmin) {
-            console.log("⚠️  Admin user already exists!");
-            console.log(`📧 Email: ${existingAdmin.email}`);
-            console.log(`👤 Name: ${existingAdmin.name}`);
-            console.log(`🔑 Role: ${existingAdmin.role}`);
-            console.log("\nℹ️  If you want to reset the admin password, delete the user from MongoDB and run this script again.");
+            console.log("Admin user already exists. Email:", existingAdmin.email);
             return;
         }
 
         // Hash password
-        console.log("🔐 Hashing password...");
         const hashedPassword = await bcrypt.hash(ADMIN_USER.password, 10);
 
         // Create admin user
-        const adminUser = {
+        const adminUser = new User({
             ...ADMIN_USER,
             password: hashedPassword,
-        };
+        });
 
-        console.log("👤 Creating admin user...");
-        const result = await usersCollection.insertOne(adminUser);
+        await adminUser.save();
 
-        console.log("\n✅ Admin user created successfully!");
-        console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        console.log("📧 Email:", ADMIN_USER.email);
-        console.log("🔑 Password:", ADMIN_USER.password);
-        console.log("🆔 User ID:", result.insertedId);
-        console.log("━━━━━━━━━━━━━━━━━━━━━━━━━━━━");
-        console.log("\n⚠️  IMPORTANT: Change the default password after first login!");
-        console.log("💡 You can now login with these credentials at /login");
-
+        console.log("Admin user created successfully!");
+        console.log("Email:", ADMIN_USER.email);
+        console.log("Password:", ADMIN_USER.password);
     } catch (error) {
         console.error("❌ Error seeding admin user:", error);
         process.exit(1);
     } finally {
-        await client.close();
-        console.log("\n🔌 Disconnected from MongoDB");
+        await mongoose.disconnect();
     }
 }
 
-// Run the seed script
-console.log("🌱 Starting admin user seed script...\n");
 seedAdmin()
     .then(() => {
-        console.log("\n✨ Seed script completed!");
         process.exit(0);
     })
     .catch((error) => {
-        console.error("\n❌ Seed script failed:", error);
+        console.error("Seed script failed:", error);
         process.exit(1);
     });

@@ -1,4 +1,4 @@
-import { Users, DollarSign, ShoppingBag, Package, Tags, ArrowUpRight } from "lucide-react";
+import { Users, DollarSign, ShoppingBag, Package, Tags, ArrowUpRight, UserCog } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Dashboard = () => {
@@ -44,7 +44,7 @@ const Dashboard = () => {
             </div>
 
             <h2 className="text-3xl font-heading font-bold uppercase mb-8">Quick Actions</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <Link to="/admin/products" className="bg-background p-8 border-2 border-border hover:bg-foreground hover:text-background transition-all group relative overflow-hidden">
                     <div className="relative z-10">
                         <div className="mb-6">
@@ -72,6 +72,16 @@ const Dashboard = () => {
                         </div>
                         <h3 className="font-heading font-bold text-2xl uppercase mb-2">Manage Orders</h3>
                         <p className="text-sm font-mono uppercase opacity-70">Track and fulfillment</p>
+                    </div>
+                </Link>
+
+                <Link to="/admin/users" className="bg-background p-8 border-2 border-border hover:bg-foreground hover:text-background transition-all group relative overflow-hidden">
+                    <div className="relative z-10">
+                        <div className="mb-6">
+                            <UserCog className="w-10 h-10" />
+                        </div>
+                        <h3 className="font-heading font-bold text-2xl uppercase mb-2">Manage Users</h3>
+                        <p className="text-sm font-mono uppercase opacity-70">User accounts & roles</p>
                     </div>
                 </Link>
             </div>

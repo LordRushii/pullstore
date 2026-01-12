@@ -12,7 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { dataLayer } from "@/lib/dataLayer";
+import { dataLayer } from "@/lib/apiService";
 import ProductCard from "./product-card";
 import { Button } from "./ui/button";
 
