@@ -7,11 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "seed:admin": "node scripts/seed-admin.js",
-    "seed:data": "node scripts/seed-data.js",
-    "seed:all": "node scripts/seed-admin.js && node scripts/seed-data.js",
-    "cleanup:db": "node scripts/cleanup-db.js"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
