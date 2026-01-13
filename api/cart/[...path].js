@@ -9,11 +9,9 @@ import {
 
 export default async function handler(req, res) {
   await route(req, res, async ({ request, method, segments, action }) => {
-    // /api/cart (GET)
-    if (segments.length === 2 && method === "GET") {
-      return getCart(request);
-    }
-
+    // Only handle sub-paths: /api/cart/add, /api/cart/update, etc.
+    // Base route /api/cart is handled by index.js
+    
     // actions: add, update, remove, clear
     if (method === "POST" && action === "add") return addToCart(request);
     if (method === "PUT" && action === "update") return updateCartItem(request);

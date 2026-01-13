@@ -8,12 +8,8 @@ import {
 
 export default async function handler(req, res) {
   await route(req, res, async ({ request, method, segments }) => {
-    // /api/categories
-    if (segments.length === 2) {
-      if (method === "GET") return getCategories(request);
-      if (method === "POST") return createCategory(request);
-      return methodNotAllowed();
-    }
+    // Only handle sub-paths: /api/categories/[id]
+    // Base route /api/categories is handled by index.js
 
     // /api/categories/[id]
     if (segments.length === 3) {

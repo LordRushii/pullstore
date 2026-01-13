@@ -9,14 +9,7 @@ import {
 
 export default async function handler(req, res) {
   await route(req, res, async ({ request, method, segments }) => {
-    // /api/products
-    if (segments.length === 2) {
-      if (method === "GET") return getProducts(request);
-      if (method === "POST") return createProduct(request);
-      return methodNotAllowed();
-    }
-
-    // /api/products/[sku]
+    // /api/products/[sku] - only handle sub-paths
     if (segments.length === 3) {
       if (method === "GET") return getProductBySku(request);
       if (method === "PUT") return updateProduct(request);

@@ -9,10 +9,8 @@ import {
 
 export default async function handler(req, res) {
   await route(req, res, async ({ request, method, segments, action }) => {
-    // /api/orders (POST)
-    if (segments.length === 2 && method === "POST") {
-      return createOrder(request);
-    }
+    // Only handle sub-paths: /api/orders/user, /api/orders/all, /api/orders/status, /api/orders/[orderId]
+    // Base route /api/orders is handled by index.js
 
     if (method === "GET") {
       if (action === "user") return getUserOrders(request);
