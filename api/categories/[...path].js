@@ -1,10 +1,10 @@
-import { route, notFound, methodNotAllowed } from "./_router-utils.js";
+import { route, notFound, methodNotAllowed } from "../_router-utils.js";
 import {
   getCategories,
   createCategory,
   updateCategory,
   deleteCategory,
-} from "../src/api/categories.js";
+} from "../../src/api/categories.js";
 
 export default async function handler(req, res) {
   await route(req, res, async ({ request, method, segments }) => {
@@ -25,4 +25,3 @@ export default async function handler(req, res) {
     return notFound();
   });
 }
-

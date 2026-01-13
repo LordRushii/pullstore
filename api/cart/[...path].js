@@ -1,11 +1,11 @@
-import { route, notFound } from "./_router-utils.js";
+import { route, notFound } from "../_router-utils.js";
 import {
   getCart,
   addToCart,
   updateCartItem,
   removeFromCart,
   clearCart,
-} from "../src/api/cart.js";
+} from "../../src/api/cart.js";
 
 export default async function handler(req, res) {
   await route(req, res, async ({ request, method, segments, action }) => {
@@ -23,4 +23,3 @@ export default async function handler(req, res) {
     return notFound();
   });
 }
-

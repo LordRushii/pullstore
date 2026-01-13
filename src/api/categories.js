@@ -1,8 +1,5 @@
 import mongoose from "mongoose";
 import Category from "../models/Category.js";
-import { config } from "dotenv";
-
-config();
 
 const MONGO_URI = process.env.VITE_MONGO_URI;
 const DB_NAME = "pullstore_db";

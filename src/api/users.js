@@ -1,9 +1,6 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import User from "../models/User.js";
-import { config } from "dotenv";
-
-config();
 
 const MONGO_URI = process.env.VITE_MONGO_URI;
 const DB_NAME = "pullstore_db";

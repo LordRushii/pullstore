@@ -1,9 +1,6 @@
 import { MongoClient } from "mongodb";
 import mongoose from "mongoose";
 import Product from "../models/Product.js";
-import { config } from "dotenv";
-
-config();
 
 const MONGO_URI = process.env.VITE_MONGO_URI;
 const DB_NAME = "pullstore_db";

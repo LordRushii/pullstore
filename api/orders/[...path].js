@@ -1,11 +1,11 @@
-import { route, notFound } from "./_router-utils.js";
+import { route, notFound } from "../_router-utils.js";
 import {
   createOrder,
   getUserOrders,
   getAllOrders,
   updateOrderStatus,
   getOrderById,
-} from "../src/api/orders.js";
+} from "../../src/api/orders.js";
 
 export default async function handler(req, res) {
   await route(req, res, async ({ request, method, segments, action }) => {
@@ -30,4 +30,3 @@ export default async function handler(req, res) {
     return notFound();
   });
 }
-

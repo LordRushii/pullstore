@@ -1,11 +1,11 @@
-import { route, notFound, methodNotAllowed } from "./_router-utils.js";
+import { route, notFound, methodNotAllowed } from "../_router-utils.js";
 import {
   getProducts,
   getProductBySku,
   createProduct,
   updateProduct,
   deleteProduct,
-} from "../src/api/products.js";
+} from "../../src/api/products.js";
 
 export default async function handler(req, res) {
   await route(req, res, async ({ request, method, segments }) => {
@@ -27,4 +27,3 @@ export default async function handler(req, res) {
     return notFound();
   });
 }
-

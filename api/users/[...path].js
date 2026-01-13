@@ -1,4 +1,4 @@
-import { route, notFound } from "./_router-utils.js";
+import { route, notFound } from "../_router-utils.js";
 import {
   registerUser,
   loginUser,
@@ -8,7 +8,7 @@ import {
   getAllUsers,
   updateUser,
   deleteUser,
-} from "../src/api/users.js";
+} from "../../src/api/users.js";
 
 export default async function handler(req, res) {
   await route(req, res, async ({ request, method, segments, action }) => {
@@ -42,4 +42,3 @@ export default async function handler(req, res) {
     return notFound();
   });
 }
-
