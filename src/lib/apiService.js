@@ -8,11 +8,7 @@ const API_BASE = import.meta.env.VITE_APP_URL || window.location.origin;
 // Helper function for making API requests
 async function apiRequest(endpoint, options = {}) {
     const url = `${API_BASE}${endpoint}`;
-    
-    // #region agent log
-    fetch('http://127.0.0.1:7242/ingest/448742b1-5c1b-41e6-9e55-ef8709699245',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'apiService.js:10',message:'API request initiated',data:{endpoint,url,apiBase:API_BASE},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'A'})}).catch(()=>{});
-    // #endregion
-    
+
     const config = {
         headers: {
             "Content-Type": "application/json",
@@ -23,27 +19,18 @@ async function apiRequest(endpoint, options = {}) {
 
     try {
         const response = await fetch(url, config);
-        
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/448742b1-5c1b-41e6-9e55-ef8709699245',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'apiService.js:22',message:'Response received',data:{endpoint,status:response.status,statusText:response.statusText,contentType:response.headers.get('content-type')},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
-        // #endregion
-        
-        const contentType = response.headers.get('content-type');
-        const isJson = contentType && contentType.includes('application/json');
-        
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/448742b1-5c1b-41e6-9e55-ef8709699245',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'apiService.js:26',message:'Content type check',data:{endpoint,isJson,contentType},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
-        // #endregion
-        
+
+        const contentType = response.headers.get("content-type");
+        const isJson = contentType && contentType.includes("application/json");
+
         let data;
         if (isJson) {
             data = await response.json();
         } else {
             const text = await response.text();
-            // #region agent log
-            fetch('http://127.0.0.1:7242/ingest/448742b1-5c1b-41e6-9e55-ef8709699245',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'apiService.js:33',message:'Non-JSON response received',data:{endpoint,status:response.status,textPreview:text.substring(0,100)},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'B'})}).catch(()=>{});
-            // #endregion
-            throw new Error(`Expected JSON but got ${contentType || 'unknown content type'}. Response preview: ${text.substring(0, 100)}`);
+            throw new Error(
+                `Expected JSON but got ${contentType || "unknown content type"}. Response preview: ${text.substring(0, 100)}`
+            );
         }
 
         if (!response.ok) {
@@ -52,9 +39,6 @@ async function apiRequest(endpoint, options = {}) {
 
         return data;
     } catch (error) {
-        // #region agent log
-        fetch('http://127.0.0.1:7242/ingest/448742b1-5c1b-41e6-9e55-ef8709699245',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({location:'apiService.js:44',message:'API request error',data:{endpoint,errorMessage:error.message,errorName:error.name},timestamp:Date.now(),sessionId:'debug-session',runId:'run1',hypothesisId:'C'})}).catch(()=>{});
-        // #endregion
         console.error(`API Error (${endpoint}):`, error);
         throw error;
     }
