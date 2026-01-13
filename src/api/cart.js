@@ -12,11 +12,17 @@ async function connectToDatabase() {
         return;
     }
 
+    if (!MONGO_URI) {
+        console.error("❌ MONGO_URI is not set in environment variables");
+        throw new Error("Database connection not configured. Please set VITE_MONGO_URI in Vercel environment variables.");
+    }
+
     try {
         await mongoose.connect(MONGO_URI, {
             dbName: DB_NAME,
         });
         isConnected = true;
+        console.log("✅ MongoDB connected successfully");
     } catch (error) {
         console.error("❌ MongoDB connection error:", error);
         throw error;
