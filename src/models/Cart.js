@@ -52,9 +52,6 @@ const cartSchema = new mongoose.Schema(
     }
 );
 
-// Index for faster lookups
-cartSchema.index({ userId: 1 });
-
 const Cart = mongoose.models.Cart || mongoose.model("Cart", cartSchema);
 
 export default Cart;

@@ -58,7 +58,6 @@ const productSchema = new mongoose.Schema(
 // Index for faster searches
 productSchema.index({ name: "text", description: "text", category: "text" });
 productSchema.index({ category: 1 });
-productSchema.index({ sku: 1 });
 
 const Product = mongoose.models.Product || mongoose.model("Product", productSchema);
 
