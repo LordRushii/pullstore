@@ -1,5 +1,5 @@
-import { useAuth } from "../context/AuthContext";
-import { dataLayer } from "../lib/apiService";
+import { useAuth } from "../../context/AuthContext";
+import { dataLayer } from "../../lib/apiService";
 import { Package, Truck, CheckCircle, Clock, User } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";

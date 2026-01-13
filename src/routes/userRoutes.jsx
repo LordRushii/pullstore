@@ -1,10 +1,10 @@
 import { Route } from "react-router-dom";
 import ProtectedRoute from "../components/ProtectedRoute";
 import MainLayout from "../layouts/MainLayout";
-import UserProfile from "../pages/UserProfile";
-import Checkout from "../pages/Checkout";
-import Payment from "../pages/Payment";
-import OrderConfirmation from "../pages/OrderConfirmation";
+import UserProfile from "../pages/user/UserProfile";
+import Checkout from "../pages/user/Checkout";
+import Payment from "../pages/user/Payment";
+import OrderConfirmation from "../pages/user/OrderConfirmation";
 
 const userRoutes = (
     <Route element={<ProtectedRoute />}>
