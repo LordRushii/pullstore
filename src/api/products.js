@@ -2,7 +2,7 @@ import { MongoClient } from "mongodb";
 import mongoose from "mongoose";
 import Product from "../models/Product.js";
 
-const MONGO_URI = process.env.VITE_MONGO_URI;
+const MONGO_URI = process.env.MONGO_URI;
 const DB_NAME = "pullstore_db";
 
 let isConnected = false;
@@ -14,7 +14,7 @@ async function connectToDatabase() {
 
     if (!MONGO_URI) {
         console.error("❌ MONGO_URI is not set in environment variables");
-        throw new Error("Database connection not configured. Please set VITE_MONGO_URI in Vercel environment variables.");
+        throw new Error("Database connection not configured. Please set MONGO_URI in Vercel environment variables.");
     }
 
     try {

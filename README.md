@@ -14,8 +14,8 @@ npm run dev
 Create `.env` file:
 
 ```env
-VITE_MONGO_URI=your_mongodb_connection_string
-VITE_BETTER_AUTH_SECRET=your_secret_key
+MONGO_URI=your_mongodb_connection_string
+BETTER_AUTH_SECRET=your_secret_key
 VITE_BETTER_AUTH_URL=http://localhost:5173
 VITE_APP_URL=http://localhost:5173
 ```

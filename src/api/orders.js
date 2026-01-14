@@ -3,7 +3,7 @@ import Order from "../models/Order.js";
 import Cart from "../models/Cart.js";
 import Product from "../models/Product.js";
 
-const MONGO_URI = process.env.VITE_MONGO_URI;
+const MONGO_URI = process.env.MONGO_URI;
 const DB_NAME = "pullstore_db";
 
 let isConnected = false;

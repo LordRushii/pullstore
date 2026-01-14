@@ -19,11 +19,8 @@ export default defineConfig(({ mode }) => {
     optimizeDeps: {
       exclude: ["better-auth", "mongodb", "bcryptjs"],
     },
-    define: {
-      // Make env variables available to the app
-      'process.env.VITE_MONGO_URI': JSON.stringify(env.VITE_MONGO_URI),
-      'process.env.VITE_BETTER_AUTH_SECRET': JSON.stringify(env.VITE_BETTER_AUTH_SECRET),
-      'process.env.VITE_APP_URL': JSON.stringify(env.VITE_APP_URL),
-    },
+    // IMPORTANT:
+    // Do not inject server secrets into the client bundle via `define`.
+    // Only keep public, client-safe values in `import.meta.env.VITE_*`.
   };
 });   

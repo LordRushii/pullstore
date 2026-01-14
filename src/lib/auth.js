@@ -8,11 +8,8 @@ if (typeof process !== 'undefined') {
 }
 
 function getMongoURI() {
-    if (typeof process !== 'undefined' && process.env?.VITE_MONGO_URI) {
-        return process.env.VITE_MONGO_URI;
-    }
-    if (typeof import.meta !== 'undefined' && import.meta.env?.VITE_MONGO_URI) {
-        return import.meta.env.VITE_MONGO_URI;
+    if (typeof process !== 'undefined' && process.env?.MONGO_URI) {
+        return process.env.MONGO_URI;
     }
     return null;
 }
@@ -21,7 +18,7 @@ const MONGO_URI = getMongoURI();
 
 if (!MONGO_URI) {
     throw new Error(
-        "VITE_MONGO_URI is not defined in environment variables. " +
+        "MONGO_URI is not defined in environment variables. " +
         "Please create a .env file with your MongoDB connection string."
     );
 }

@@ -6,7 +6,7 @@ export async function handleAuthRequest(request) {
     } catch (error) {
         console.error("Auth handler error:", error);
         
-        const errorMessage = error.message?.includes("VITE_MONGO_URI")
+        const errorMessage = error.message?.includes("MONGO_URI")
             ? "MongoDB connection not configured. Please check your .env file."
             : error.message || "Authentication failed";
             

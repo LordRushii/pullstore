@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import User from "../models/User.js";
 
-const MONGO_URI = process.env.VITE_MONGO_URI;
+const MONGO_URI = process.env.MONGO_URI;
 const DB_NAME = "pullstore_db";
 
 let isConnected = false;
